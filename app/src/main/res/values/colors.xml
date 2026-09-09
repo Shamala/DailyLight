@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Dawn: night at the bottom-left, first warmth at the top-right.
+      To go darker again, the original set was
+        #10132A / #2A2142 / #453151
+      To go lighter still, try
+        #2C2750 / #4B3B69 / #6E527C
+      Change these three and the whole widget follows.
+    -->
+    <color name="bg_start">#1F1C3C</color>
+    <color name="bg_center">#3B2F58</color>
+    <color name="bg_end">#5B4370</color>
+
+    <!-- Soft glow sitting in the top-right corner (ARGB, ~28% alpha). -->
+    <color name="glow">#47E9B08D</color>
+    <color name="glow_end">#00E9B08D</color>
+
+    <color name="cream">#F7F1E9</color>
+    <color name="cream_dim">#E4DCEA</color>
+    <color name="muted">#BCB0C9</color>
+    <color name="day_label">#9C90AE</color>
+    <color name="accent">#F0BC98</color>
+    <color name="rule">#66F0BC98</color>
+
+    <color name="app_bg">#14122A</color>
+</resources>

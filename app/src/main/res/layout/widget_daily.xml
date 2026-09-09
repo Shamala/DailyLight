@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The widget face. Deliberately restricted to views RemoteViews can inflate
+  (LinearLayout / TextView / ImageView) — no ConstraintLayout, no plain View.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_bg"
+    android:paddingStart="22dp"
+    android:paddingEnd="22dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
+
+    <!-- Weekday on the top left -->
+    <TextView
+        android:id="@+id/tv_weekday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:textSize="10sp"
+        android:letterSpacing="0.22"
+        android:textColor="@color/day_label"
+        android:maxLines="1"
+        android:ellipsize="end"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:text="TUESDAY" />
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/lora_medium"
+        android:textSize="15sp"
+        android:textColor="@color/cream_dim"
+        android:maxLines="1"
+        android:ellipsize="end"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:text="8 September 2026" />
+
+    <!-- Hairline rule. ImageView, because RemoteViews rejects a bare View. -->
+    <ImageView
+        android:id="@+id/rule"
+        android:layout_width="26dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/rule"
+        android:importantForAccessibility="no"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/tv_affirmation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:fontFamily="@font/lora_italic"
+        android:textSize="19sp"
+        android:lineSpacingExtra="5dp"
+        android:textColor="@color/cream"
+        android:maxLines="4"
+        android:ellipsize="end"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:text="Today has not been lived yet. It is entirely mine." />
+
+    <TextView
+        android:id="@+id/tv_thought"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:fontFamily="@font/lora_regular"
+        android:textSize="12sp"
+        android:lineSpacingExtra="3dp"
+        android:textColor="@color/muted"
+        android:maxLines="3"
+        android:ellipsize="end"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:text="A day is not made or lost in its first hour, but that hour decides how you meet the rest of it." />
+
+    <!-- Spacer to push the footer to the bottom -->
+    <LinearLayout
+        android:id="@+id/spacer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" />
+
+    <!-- Footer: Year countdown -->
+    <TextView
+        android:id="@+id/tv_countdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:fontFamily="sans-serif-light"
+        android:textSize="10sp"
+        android:letterSpacing="0.04"
+        android:textColor="@color/muted"
+        android:gravity="end"
+        android:maxLines="1"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:text="114 days left in 2026" />
+
+</LinearLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Daily Light</string>
+    <string name="widget_description">An affirmation, a thought, the date and how much of the year is left.</string>
+    <string name="tagline">A quiet start to the day.</string>
+    <string name="how_to_title">Put it on your home screen</string>
+    <string name="how_to_body">1. Press and hold an empty spot on your home screen.\n2. Tap <b>Widgets</b>.\n3. Search for <b>Daily Light</b> and drag it where you want it.\n\nSamsung tip: drop it on the screen you land on when you unlock, so it is the first thing you read.</string>
+    <string name="tap_hint">Tap the card — on the home screen or here — to draw a different pairing. It resets to the day\'s own words at midnight.</string>
+</resources>
