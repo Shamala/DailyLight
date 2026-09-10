@@ -1,9 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Daily Light</string>
-    <string name="widget_description">An affirmation, a thought, the date and how much of the year is left.</string>
+    <string name="widget_description">An affirmation, a thought, the date and how far along the year is.</string>
+
     <string name="tagline">A quiet start to the day.</string>
-    <string name="how_to_title">Put it on your home screen</string>
-    <string name="how_to_body">1. Press and hold an empty spot on your home screen.\n2. Tap <b>Widgets</b>.\n3. Search for <b>Daily Light</b> and drag it where you want it.\n\nSamsung tip: drop it on the screen you land on when you unlock, so it is the first thing you read.</string>
-    <string name="tap_hint">Tap the card — on the home screen or here — to draw a different pairing. It resets to the day\'s own words at midnight.</string>
+    <string name="tagline_evening">A quiet end to the day.</string>
+
+    <string name="keep_this">Keep this one</string>
+    <string name="kept_already">Kept ✓</string>
+    <string name="another">Another</string>
+
+    <string name="sec_your_words">Your own words</string>
+    <string name="hint_new_word">Write one in your own words…</string>
+    <string name="add_to_pool">Add to the pool</string>
+
+    <string name="sec_kept">Kept</string>
+    <string name="kept_hint">Lines you keep come back roughly one morning in four. Tap Keep this one above when something lands.</string>
+    <string name="kept_empty">Nothing kept yet.</string>
+
+    <string name="sec_year_line">The year line</string>
+    <string name="yl_day_of_year">Day 252 · 2026</string>
+    <string name="yl_days_lived">252 days lived this year</string>
+    <string name="yl_bar_only">Just the bar, no numbers</string>
+    <string name="yl_countdown">114 days left in 2026</string>
+    <string name="show_bar">Show the year bar</string>
+
+    <string name="sec_evening">Evening</string>
+    <string name="evening_voice">A closing voice at night</string>
+    <string name="evening_hint">After this hour the card changes to a different set of words — setting down, noticing what went well, permission to stop. It stays that way until 4am.</string>
+
+    <string name="sec_appearance">Appearance</string>
+    <string name="shift_colours">Colours follow the time of day</string>
+    <string name="shift_hint">Indigo at dawn, cooler through the middle of the day, rose at dusk, deepest at night. Turn this off to keep the dawn palette all day.</string>
+    <string name="text_size">Text size</string>
+    <string name="size_small">Small</string>
+    <string name="size_medium">Medium</string>
+    <string name="size_large">Large</string>
+
+    <string name="sec_placing">Placing it</string>
+    <string name="how_to_home">Home screen: press and hold an empty spot, tap Widgets, find Daily Light, drag it where you want it.</string>
+    <string name="lock_screen_title">Lock screen</string>
+    <string name="how_to_lock">On One UI 8.5 and newer: press and hold the lock screen, tap the pencil, then Widgets, and add Daily Light there too. On older versions Samsung only allows its own widgets on the lock screen — this one will appear there after you update.</string>
+
+    <string name="tap_hint">On the widget, tap the words to draw a different pairing and tap the date to come back here. Reshuffling lasts the day; tomorrow returns to its own words.</string>
 </resources>

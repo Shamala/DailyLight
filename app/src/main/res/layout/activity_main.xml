@@ -3,16 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="22dp"
-        android:paddingEnd="22dp"
-        android:paddingTop="56dp"
-        android:paddingBottom="48dp">
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="52dp"
+        android:paddingBottom="56dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -23,6 +24,7 @@
             android:text="@string/app_name" />
 
         <TextView
+            android:id="@+id/tv_voice_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -31,40 +33,265 @@
             android:textColor="@color/muted"
             android:text="@string/tagline" />
 
+        <!-- Live preview of the card as it is right now -->
         <include
             layout="@layout/widget_daily"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp" />
+            android:layout_marginTop="22dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:fontFamily="sans-serif-light"
-            android:textSize="12sp"
-            android:lineSpacingExtra="3dp"
-            android:textColor="@color/day_label"
-            android:text="@string/tap_hint" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="34dp"
-            android:fontFamily="@font/lora_medium"
-            android:textSize="15sp"
-            android:textColor="@color/cream_dim"
-            android:text="@string/how_to_title" />
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:id="@+id/btn_keep"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/btn_bg"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:textColor="@color/cream_dim"
+                android:text="@string/keep_this" />
+
+            <TextView
+                android:id="@+id/btn_another"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/btn_bg"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:textColor="@color/cream_dim"
+                android:text="@string/another" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/Hint"
             android:layout_marginTop="10dp"
-            android:fontFamily="sans-serif-light"
-            android:textSize="13sp"
-            android:lineSpacingExtra="5dp"
-            android:textColor="@color/muted"
-            android:text="@string/how_to_body" />
+            android:layout_marginStart="4dp"
+            android:text="@string/tap_hint" />
+
+        <!-- ============ Your own words ============ -->
+
+        <TextView
+            style="@style/SectionHeading"
+            android:text="@string/sec_your_words" />
+
+        <LinearLayout style="@style/Card">
+
+            <EditText
+                android:id="@+id/et_new_word"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/field_bg"
+                android:padding="14dp"
+                android:minLines="2"
+                android:gravity="top|start"
+                android:inputType="textMultiLine|textCapSentences"
+                android:fontFamily="@font/lora_italic"
+                android:textSize="15sp"
+                android:textColor="@color/cream"
+                android:textColorHint="@color/day_label"
+                android:hint="@string/hint_new_word"
+                android:importantForAutofill="no" />
+
+            <TextView
+                android:id="@+id/btn_add_word"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_accent_bg"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:textColor="@color/accent"
+                android:text="@string/add_to_pool" />
+
+            <LinearLayout
+                android:id="@+id/list_custom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="6dp" />
+        </LinearLayout>
+
+        <!-- ============ Kept ============ -->
+
+        <TextView
+            style="@style/SectionHeading"
+            android:text="@string/sec_kept" />
+
+        <LinearLayout style="@style/Card">
+
+            <TextView
+                android:id="@+id/tv_kept_hint"
+                style="@style/Hint"
+                android:text="@string/kept_hint" />
+
+            <LinearLayout
+                android:id="@+id/list_favourites"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+        <!-- ============ The year line ============ -->
+
+        <TextView
+            style="@style/SectionHeading"
+            android:text="@string/sec_year_line" />
+
+        <LinearLayout style="@style/Card">
+
+            <RadioGroup
+                android:id="@+id/rg_year_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/rb_day_of_year"
+                    style="@style/Choice"
+                    android:text="@string/yl_day_of_year" />
+
+                <RadioButton
+                    android:id="@+id/rb_days_lived"
+                    style="@style/Choice"
+                    android:text="@string/yl_days_lived" />
+
+                <RadioButton
+                    android:id="@+id/rb_bar_only"
+                    style="@style/Choice"
+                    android:text="@string/yl_bar_only" />
+
+                <RadioButton
+                    android:id="@+id/rb_countdown"
+                    style="@style/Choice"
+                    android:text="@string/yl_countdown" />
+            </RadioGroup>
+
+            <Switch
+                android:id="@+id/sw_bar"
+                style="@style/Toggle"
+                android:text="@string/show_bar" />
+        </LinearLayout>
+
+        <!-- ============ Evening ============ -->
+
+        <TextView
+            style="@style/SectionHeading"
+            android:text="@string/sec_evening" />
+
+        <LinearLayout style="@style/Card">
+
+            <Switch
+                android:id="@+id/sw_evening"
+                style="@style/Toggle"
+                android:text="@string/evening_voice" />
+
+            <TextView
+                style="@style/Hint"
+                android:text="@string/evening_hint" />
+
+            <TextView
+                android:id="@+id/tv_evening_hour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/lora_medium"
+                android:textSize="15sp"
+                android:textColor="@color/cream_dim"
+                android:text="from 18:00" />
+
+            <SeekBar
+                android:id="@+id/sb_evening_hour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:max="11" />
+        </LinearLayout>
+
+        <!-- ============ Appearance ============ -->
+
+        <TextView
+            style="@style/SectionHeading"
+            android:text="@string/sec_appearance" />
+
+        <LinearLayout style="@style/Card">
+
+            <Switch
+                android:id="@+id/sw_shift"
+                style="@style/Toggle"
+                android:text="@string/shift_colours" />
+
+            <TextView
+                style="@style/Hint"
+                android:text="@string/shift_hint" />
+
+            <TextView
+                style="@style/SubHeading"
+                android:text="@string/text_size" />
+
+            <RadioGroup
+                android:id="@+id/rg_text_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_small"
+                    style="@style/Choice"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/size_small" />
+
+                <RadioButton
+                    android:id="@+id/rb_medium"
+                    style="@style/Choice"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/size_medium" />
+
+                <RadioButton
+                    android:id="@+id/rb_large"
+                    style="@style/Choice"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/size_large" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- ============ Placing it ============ -->
+
+        <TextView
+            style="@style/SectionHeading"
+            android:text="@string/sec_placing" />
+
+        <LinearLayout style="@style/Card">
+
+            <TextView
+                style="@style/Hint"
+                android:text="@string/how_to_home" />
+
+            <TextView
+                style="@style/SubHeading"
+                android:text="@string/lock_screen_title" />
+
+            <TextView
+                style="@style/Hint"
+                android:text="@string/how_to_lock" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

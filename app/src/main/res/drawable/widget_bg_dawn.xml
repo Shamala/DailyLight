@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dawn background. Palette lives in values/colors.xml. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="28dp" />
+            <gradient
+                android:type="linear"
+                android:angle="315"
+                android:startColor="@color/dawn_start"
+                android:centerColor="@color/dawn_center"
+                android:endColor="@color/dawn_end" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="28dp" />
+            <gradient
+                android:type="radial"
+                android:gradientRadius="230dp"
+                android:centerX="0.90"
+                android:centerY="0.05"
+                android:startColor="@color/dawn_glow"
+                android:endColor="@color/dawn_glow_end" />
+        </shape>
+    </item>
+
+</layer-list>

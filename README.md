@@ -1,81 +1,93 @@
 # Daily Light
 
-A home-screen widget for Android. The first thing you see when you unlock the phone:
+A home-screen and lock-screen widget for Android. The first thing you see when you unlock the phone:
 
 - the weekday and full date
-- how many days are left in the year
+- how far along the year is — a day count and a quiet bar, not a countdown
 - an affirmation for the day
 - a short thought to sit with
 
-Set in Lora, on a dawn gradient — night at the bottom-left, first light at the top-right.
+After an hour you choose, it turns to a **closing voice** for the evening — setting down, noticing
+what went well, permission to stop. Set in Lora, on a palette that follows the light: indigo at dawn,
+cooler through the middle of the day, rose at dusk, deepest at night.
 
 ---
 
 ## Build it and put it on the phone
 
-You need **Android Studio** (free, any recent version) on a computer, once. After that
-the widget lives on the phone and needs nothing.
+You need **Android Studio** on a computer, once. After that the widget lives on the phone and needs
+nothing — no account, no internet, no permissions beyond restarting after a reboot.
 
-1. **Open the project.** Android Studio → *Open* → choose the `DailyLight` folder.
-   Let it sync (it downloads the Android Gradle Plugin and Kotlin the first time —
-   a few minutes, needs internet).
+1. **Open the project.** Android Studio → *Open* → choose the `DailyLight` folder. Let it sync.
+2. **Set the Gradle JDK to 21.** Settings → *Build, Execution, Deployment* → *Build Tools* → *Gradle*
+   → **Gradle JDK** → *Download JDK…* → version **21**. Recent Android Studio bundles Java 25, which
+   Gradle 8.11.1 refuses.
+3. **Turn on developer mode.** Settings → *About phone* → *Software information* → tap **Build
+   number** seven times. Then Settings → *Developer options* → **USB debugging** on (and **Install
+   via USB** if you see it).
+4. **Connect.** Either plug in a data cable, or Developer options → **Wireless debugging** → *Pair
+   device with QR code*, and in Android Studio use the device dropdown → *Pair Devices Using Wi-Fi*.
+5. **Press Run** (▶).
 
-2. **Turn on developer mode on the Samsung.**
-   Settings → *About phone* → *Software information* → tap **Build number** seven times.
-   Then Settings → *Developer options* → turn on **USB debugging**.
+Then place it:
 
-3. **Plug the phone in** with a USB cable. Tap *Allow* on the "Allow USB debugging?" prompt.
-   The phone should appear in the device dropdown at the top of Android Studio.
+- **Home screen** — press and hold an empty spot → *Widgets* → search **Daily Light** → drag it on.
+- **Lock screen** (One UI 8.5+) — press and hold the lock screen → pencil → *Widgets* → add it there
+  too. On older One UI, Samsung allows only its own widgets on the lock screen; this one declares
+  itself eligible and will appear once you update.
 
-4. **Press Run** (the green ▶). It installs and opens the app, which shows today's card
-   and the instructions below.
+### Building from a terminal
 
-5. **Add the widget.** On the phone: press and hold an empty spot on the home screen →
-   **Widgets** → search **Daily Light** → drag it onto the screen you land on when you unlock.
-   Resize it by long-pressing and dragging the handles.
-
-You can unplug the cable now. Nothing else is needed — no account, no internet, no permissions
-beyond restarting after a reboot.
-
-### If you'd rather build from a terminal
-
-`gradlew`/`gradlew.bat` are not included (they couldn't be generated here). Run `gradle wrapper`
-once in the project folder to create them, or just use Android Studio, which reads
-`gradle/wrapper/gradle-wrapper.properties` directly and doesn't need them.
+`gradlew` / `gradlew.bat` are not included. Run `gradle wrapper` once to create them, or just use
+Android Studio, which reads `gradle/wrapper/gradle-wrapper.properties` directly.
 
 ---
 
-## Making it yours
+## Using it
 
-**The words.** `app/src/main/java/com/shamala/dailylight/Content.kt` — two plain lists,
-87 affirmations and 84 thoughts, all original text. Add, delete or rewrite freely; the rotation
-adapts to whatever length the lists are. Rebuild and re-run to push the change to the phone.
+**Tap the words** on the widget to draw a different pairing. That lasts the rest of the day only —
+tomorrow returns to its own words rather than inheriting yesterday's fidgeting.
 
-**The colours.** `app/src/main/res/values/colors.xml`. `bg_start` / `bg_center` / `bg_end` are the
-diagonal gradient; `glow` is the warm light in the top-right corner; `accent` is the colour of the
-countdown number.
+**Tap the date** to open the app, where you can:
+
+- **Keep this one** — kept lines resurface roughly one day in four. Morning and evening favourites
+  are kept separately, so an evening line comes back in the evening.
+- **Add your own words** — anything you write joins the pool and can come up on any day.
+- Choose how the year line reads, when the evening voice starts, whether the colours shift, and the
+  text size.
+
+---
+
+## Making it yours in code
+
+**The words.** `app/src/main/java/com/shamala/dailylight/Content.kt` — four plain lists:
+`affirmations`, `thoughts`, `eveningAffirmations`, `eveningThoughts`. All original text. Add, delete
+or rewrite freely; the rotation adapts to whatever length the lists are.
+
+**The colours.** `app/src/main/res/values/colors.xml`, four sets of three stops plus a glow —
+`dawn_*`, `day_*`, `dusk_*`, `night_*`. Change a set and that time of day follows.
 
 **The type.** `app/src/main/res/font/` holds three static cuts of Lora. Drop in a different `.ttf`
 (lowercase filename, letters and underscores only) and point `widget_daily.xml` at it.
 
-**The layout.** `app/src/main/res/layout/widget_daily.xml`. Note that home-screen widgets can only
-use a restricted set of views — `LinearLayout`, `FrameLayout`, `RelativeLayout`, `TextView`,
-`ImageView` and a few others. No `ConstraintLayout`, and no bare `View` (that's why the little rule
-under the date is an `ImageView`).
+**The layout.** `app/src/main/res/layout/widget_daily.xml`. Home-screen widgets can only use a
+restricted set of views — `LinearLayout`, `FrameLayout`, `RelativeLayout`, `TextView`, `ImageView`,
+`ProgressBar` and a few others. No `ConstraintLayout`, and no bare `View`.
 
 ---
 
 ## How it stays current
 
-Three overlapping mechanisms, so the date is never stale:
-
-- an inexact daily alarm at 00:01 (`AlarmManager.setRepeating`, no special permission needed)
-- `updatePeriodMillis` of 30 minutes as a backstop, in `res/xml/widget_info.xml`
+- an inexact daily alarm at 00:01, for the date rolling over
+- `updatePeriodMillis` of 30 minutes, which is what catches the background changing through the day
+  and the switch to the evening voice
 - broadcasts for reboot, date change, clock change and timezone change
 
-The affirmation and thought are a pure function of the date, so redraws never change them
-mid-day. Tapping the card bumps a stored offset to draw a different pairing; the next day
-returns to the date's own words.
+The affirmation and thought are a pure function of (date, voice, offset), so redraws never change
+them mid-session.
+
+If the words seem to freeze overnight, check Settings → *Battery* → *Background usage limits* and
+make sure Daily Light isn't in *Sleeping apps*.
 
 ---
 
@@ -84,24 +96,26 @@ returns to the date's own words.
 ```
 app/src/main/
 ├── java/com/shamala/dailylight/
-│   ├── Content.kt              the affirmations and thoughts
-│   ├── DailyContent.kt         date formatting, day counter, which words today gets
+│   ├── Content.kt              the four word pools
+│   ├── Prefs.kt                settings, her own words, kept favourites
+│   ├── DailyContent.kt         date, year progress, which words this moment gets
 │   ├── DailyWidgetProvider.kt  draws the widget, schedules the daily refresh
-│   └── MainActivity.kt         the small screen behind the app icon
+│   └── MainActivity.kt         settings screen and word editor
 └── res/
     ├── layout/widget_daily.xml the widget face
-    ├── drawable/widget_bg.xml  the dawn gradient
-    ├── values/colors.xml       the palette
-    └── xml/widget_info.xml     size, resize limits, refresh interval
+    ├── layout/activity_main.xml the settings screen
+    ├── drawable/widget_bg_*.xml the four times of day
+    ├── drawable/progress_year.xml the year bar
+    ├── values/colors.xml       the palettes
+    └── xml/widget_info.xml     size, resize limits, refresh interval, lock-screen eligibility
 ```
 
-Minimum Android 8.0 (API 26). No third-party dependencies — the widget uses only the platform SDK.
+Minimum Android 8.0 (API 26). No third-party dependencies — only the platform SDK.
 
 ---
 
 ## Fonts
 
 Lora, by Cyreal, under the SIL Open Font License 1.1. The three files in `res/font/` are static
-instances cut from the variable font. If you ever distribute this app beyond your own phone,
-include a copy of the OFL alongside them — it's at
-`https://fonts.google.com/specimen/Lora/license`.
+instances cut from the variable font. If you ever distribute this app beyond your own phone, include
+a copy of the OFL alongside them — it's at `https://fonts.google.com/specimen/Lora/license`.

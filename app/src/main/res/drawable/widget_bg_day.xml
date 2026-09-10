@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Day background. Palette lives in values/colors.xml. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="28dp" />
+            <gradient
+                android:type="linear"
+                android:angle="270"
+                android:startColor="@color/day_start"
+                android:centerColor="@color/day_center"
+                android:endColor="@color/day_end" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="28dp" />
+            <gradient
+                android:type="radial"
+                android:gradientRadius="290dp"
+                android:centerX="0.50"
+                android:centerY="0.02"
+                android:startColor="@color/day_glow"
+                android:endColor="@color/day_glow_end" />
+        </shape>
+    </item>
+
+</layer-list>

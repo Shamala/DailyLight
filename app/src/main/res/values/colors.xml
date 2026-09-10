@@ -1,27 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!--
-      Dawn: night at the bottom-left, first warmth at the top-right.
-      To go darker again, the original set was
-        #10132A / #2A2142 / #453151
-      To go lighter still, try
-        #2C2750 / #4B3B69 / #6E527C
-      Change these three and the whole widget follows.
+      Four times of day. Same lightness family throughout so the cream text
+      stays legible in all of them; only hue and where the light sits change.
+      Turn the shifting off in the app to pin it to Dawn.
+
+      To go darker overall, subtract from each of the three stops.
+      The v1 (darker) dawn set was #10132A / #2A2142 / #453151.
     -->
-    <color name="bg_start">#1F1C3C</color>
-    <color name="bg_center">#3B2F58</color>
-    <color name="bg_end">#5B4370</color>
 
-    <!-- Soft glow sitting in the top-right corner (ARGB, ~28% alpha). -->
-    <color name="glow">#47E9B08D</color>
-    <color name="glow_end">#00E9B08D</color>
+    <!-- Dawn · 05:00–09:59 — indigo to plum, first light top-right -->
+    <color name="dawn_start">#1F1C3C</color>
+    <color name="dawn_center">#3B2F58</color>
+    <color name="dawn_end">#5B4370</color>
+    <color name="dawn_glow">#47E9B08D</color>
+    <color name="dawn_glow_end">#00E9B08D</color>
 
+    <!-- Day · 10:00–16:59 — cooler and a touch brighter, light overhead -->
+    <color name="day_start">#242648</color>
+    <color name="day_center">#3B3A66</color>
+    <color name="day_end">#565081</color>
+    <color name="day_glow">#3CF2E6CC</color>
+    <color name="day_glow_end">#00F2E6CC</color>
+
+    <!-- Dusk · 17:00–20:59 — warmer and rosier, light sinking to the right -->
+    <color name="dusk_start">#2A1E3E</color>
+    <color name="dusk_center">#4A2F55</color>
+    <color name="dusk_end">#6E4360</color>
+    <color name="dusk_glow">#52F0A090</color>
+    <color name="dusk_glow_end">#00F0A090</color>
+
+    <!-- Night · 21:00–04:59 — deepest and coolest, a small moon top-left -->
+    <color name="night_start">#14162E</color>
+    <color name="night_center">#262445</color>
+    <color name="night_end">#3A3355</color>
+    <color name="night_glow">#33AEC0E8</color>
+    <color name="night_glow_end">#00AEC0E8</color>
+
+    <!-- Type. Constant across all four phases. -->
     <color name="cream">#F7F1E9</color>
     <color name="cream_dim">#E4DCEA</color>
     <color name="muted">#BCB0C9</color>
     <color name="day_label">#9C90AE</color>
     <color name="accent">#F0BC98</color>
-    <color name="rule">#66F0BC98</color>
 
+    <!-- The year bar -->
+    <color name="bar_track">#1FFFFFFF</color>
+    <color name="bar_fill">#8CF0BC98</color>
+
+    <!-- The app screen -->
     <color name="app_bg">#14122A</color>
+    <color name="field_bg">#221F3E</color>
+    <color name="field_stroke">#332E52</color>
+
 </resources>

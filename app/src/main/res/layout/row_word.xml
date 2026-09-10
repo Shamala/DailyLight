@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One saved line, with a way to take it back out. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingTop="9dp"
+    android:paddingBottom="9dp">
+
+    <TextView
+        android:id="@+id/row_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/lora_italic"
+        android:textSize="14sp"
+        android:lineSpacingExtra="2dp"
+        android:textColor="@color/cream_dim" />
+
+    <TextView
+        android:id="@+id/row_remove"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="@color/day_label"
+        android:text="×" />
+
+</LinearLayout>

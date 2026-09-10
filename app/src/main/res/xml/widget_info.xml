@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  widgetCategory includes keyguard so the card is offered on the lock screen
+  as well as the home screen. Modern Android allows every widget there unless
+  it opts out with "not_keyguard"; naming keyguard explicitly also satisfies
+  Samsung's older lock-screen picker.
+-->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="250dp"
     android:minHeight="110dp"
@@ -13,4 +19,4 @@
     android:initialLayout="@layout/widget_daily"
     android:previewLayout="@layout/widget_daily"
     android:description="@string/widget_description"
-    android:widgetCategory="home_screen" />
+    android:widgetCategory="home_screen|keyguard" />

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The arc of the year. A track you can barely see, and a warm fill that
+  reaches as far as today. No number attached unless the year line asks
+  for one.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <corners android:radius="2dp" />
+            <solid android:color="@color/bar_track" />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <clip android:clipOrientation="horizontal" android:gravity="start">
+            <shape android:shape="rectangle">
+                <corners android:radius="2dp" />
+                <solid android:color="@color/bar_fill" />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

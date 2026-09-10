@@ -1,9 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.DailyLight" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/app_bg</item>
         <item name="android:statusBarColor">@color/app_bg</item>
         <item name="android:navigationBarColor">@color/app_bg</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:colorControlActivated">@color/accent</item>
+        <item name="android:colorControlNormal">@color/day_label</item>
+        <item name="android:textColorHighlight">#40F0BC98</item>
     </style>
+
+    <style name="SectionHeading">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">32dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:letterSpacing">0.22</item>
+        <item name="android:textColor">@color/day_label</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="SubHeading">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">18dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:letterSpacing">0.18</item>
+        <item name="android:textColor">@color/day_label</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="Card">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@drawable/card_bg</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="Hint">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">4dp</item>
+        <item name="android:textColor">@color/muted</item>
+    </style>
+
+    <style name="Choice">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">9dp</item>
+        <item name="android:paddingBottom">9dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/cream_dim</item>
+    </style>
+
+    <style name="Toggle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/cream_dim</item>
+    </style>
+
 </resources>
