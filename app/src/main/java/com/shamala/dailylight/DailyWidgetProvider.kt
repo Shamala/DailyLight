@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -24,9 +25,22 @@ class DailyWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        val views = buildViews(context)
-        appWidgetIds.forEach { appWidgetManager.updateAppWidget(it, views) }
+        appWidgetIds.forEach { id ->
+            appWidgetManager.updateAppWidget(id, buildViews(context, appWidgetManager, id))
+        }
         scheduleNextMidnight(context)
+    }
+
+    /** Resized: the Lora bitmaps have to be repainted at the new width. */
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle
+    ) {
+        appWidgetManager.updateAppWidget(
+            appWidgetId, buildViews(context, appWidgetManager, appWidgetId)
+        )
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -58,15 +72,18 @@ class DailyWidgetProvider : AppWidgetProvider() {
         const val ACTION_CYCLE = "com.shamala.dailylight.action.CYCLE"
         const val ACTION_MIDNIGHT = "com.shamala.dailylight.action.MIDNIGHT"
 
-        /** Redraw every instance of the widget, wherever it is placed. */
+        /** Side padding in widget_daily.xml, both sides. */
+        private const val HORIZONTAL_PADDING_DP = 44
+
+        /** Redraw every instance, each at its own width. */
         fun refreshAll(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
             val ids = manager.getAppWidgetIds(
                 ComponentName(context, DailyWidgetProvider::class.java)
             )
-            if (ids.isEmpty()) return
-            val views = buildViews(context)
-            ids.forEach { manager.updateAppWidget(it, views) }
+            ids.forEach { id ->
+                manager.updateAppWidget(id, buildViews(context, manager, id))
+            }
         }
 
         fun backgroundFor(phase: Phase): Int = when (phase) {
@@ -76,7 +93,27 @@ class DailyWidgetProvider : AppWidgetProvider() {
             Phase.NIGHT -> R.drawable.widget_bg_night
         }
 
-        fun buildViews(context: Context): RemoteViews {
+        /** Usable text width in pixels for this particular placed widget. */
+        private fun contentWidthPx(
+            context: Context,
+            manager: AppWidgetManager?,
+            appWidgetId: Int
+        ): Int {
+            val density = context.resources.displayMetrics.density
+            val widthDp = manager
+                ?.getAppWidgetOptions(appWidgetId)
+                ?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)
+                ?.takeIf { it > 0 }
+                ?: 300
+            val usableDp = (widthDp - HORIZONTAL_PADDING_DP).coerceAtLeast(120)
+            return (usableDp * density).toInt()
+        }
+
+        fun buildViews(
+            context: Context,
+            manager: AppWidgetManager? = null,
+            appWidgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID
+        ): RemoteViews {
             val day = DailyContent.now(context)
             val scale = Prefs.textScale(context)
             val views = RemoteViews(context.packageName, R.layout.widget_daily)
@@ -87,20 +124,66 @@ class DailyWidgetProvider : AppWidgetProvider() {
             views.setInt(R.id.widget_root, "setBackgroundResource", background)
 
             views.setTextViewText(R.id.tv_weekday, day.weekday)
-            views.setTextViewText(R.id.tv_date, day.date)
-            views.setTextViewText(R.id.tv_affirmation, day.affirmation)
-            views.setTextViewText(R.id.tv_thought, day.thought)
-
             views.setTextViewTextSize(
-                R.id.tv_affirmation, TypedValue.COMPLEX_UNIT_SP,
-                DailyContent.affirmationSizeSp(day.affirmation, scale)
-            )
-            views.setTextViewTextSize(
-                R.id.tv_thought, TypedValue.COMPLEX_UNIT_SP,
-                DailyContent.thoughtSizeSp(day.thought, scale)
+                R.id.tv_weekday, TypedValue.COMPLEX_UNIT_SP,
+                DailyContent.weekdaySizeSp(scale)
             )
 
-            // The year line disappears entirely on the bar-only setting.
+            // --- the Lora lines -------------------------------------------
+            // Painted here and sent as bitmaps, because the launcher inflates
+            // this layout in its own process and can substitute the system
+            // font for the one the layout asks for. Text views stay in the
+            // layout as a fallback if a bitmap can't be made.
+
+            val widthPx = contentWidthPx(context, manager, appWidgetId)
+
+            val dateBitmap = CardRenderer.date(
+                context, day.date, widthPx, DailyContent.dateSizeSp(scale)
+            )
+            if (dateBitmap != null) {
+                views.setImageViewBitmap(R.id.img_date, dateBitmap)
+                views.setViewVisibility(R.id.img_date, View.VISIBLE)
+                views.setViewVisibility(R.id.tv_date, View.GONE)
+            } else {
+                views.setViewVisibility(R.id.img_date, View.GONE)
+                views.setViewVisibility(R.id.tv_date, View.VISIBLE)
+                views.setTextViewText(R.id.tv_date, day.date)
+                views.setTextViewTextSize(
+                    R.id.tv_date, TypedValue.COMPLEX_UNIT_SP,
+                    DailyContent.dateSizeSp(scale)
+                )
+            }
+
+            val wordsBitmap = CardRenderer.words(
+                context, day.affirmation, day.thought, widthPx, scale
+            )
+            if (wordsBitmap != null) {
+                views.setImageViewBitmap(R.id.img_words, wordsBitmap)
+                views.setViewVisibility(R.id.img_words, View.VISIBLE)
+                views.setViewVisibility(R.id.tv_affirmation, View.GONE)
+                views.setViewVisibility(R.id.tv_thought, View.GONE)
+            } else {
+                views.setViewVisibility(R.id.img_words, View.GONE)
+                views.setViewVisibility(R.id.tv_affirmation, View.VISIBLE)
+                views.setViewVisibility(R.id.tv_thought, View.VISIBLE)
+                views.setTextViewText(R.id.tv_affirmation, day.affirmation)
+                views.setTextViewText(R.id.tv_thought, day.thought)
+                views.setTextViewTextSize(
+                    R.id.tv_affirmation, TypedValue.COMPLEX_UNIT_SP,
+                    DailyContent.affirmationSizeSp(day.affirmation, scale)
+                )
+                views.setTextViewTextSize(
+                    R.id.tv_thought, TypedValue.COMPLEX_UNIT_SP,
+                    DailyContent.thoughtSizeSp(day.thought, scale)
+                )
+            }
+
+            // --- the year line and its bar ---------------------------------
+
+            views.setTextViewTextSize(
+                R.id.tv_yearline, TypedValue.COMPLEX_UNIT_SP,
+                DailyContent.yearLineSizeSp(scale)
+            )
             if (day.yearLine.isEmpty()) {
                 views.setViewVisibility(R.id.tv_yearline, View.GONE)
             } else {
@@ -115,7 +198,8 @@ class DailyWidgetProvider : AppWidgetProvider() {
                 views.setViewVisibility(R.id.pb_year, View.GONE)
             }
 
-            // Tap the words to draw a different pairing…
+            // --- the two tap zones -----------------------------------------
+
             val cycle = Intent(context, DailyWidgetProvider::class.java).apply {
                 action = ACTION_CYCLE
             }
@@ -127,7 +211,6 @@ class DailyWidgetProvider : AppWidgetProvider() {
                 )
             )
 
-            // …tap the date to open the app, where you can keep it or edit.
             val open = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
@@ -145,17 +228,16 @@ class DailyWidgetProvider : AppWidgetProvider() {
         /** Warms the number, so the eye lands on it without it shouting. */
         fun accented(context: Context, text: String): CharSequence {
             val span = SpannableString(text)
+            if (text.isEmpty()) return span
             val colour = context.getColor(R.color.accent)
             val digits = Regex("\\d+").find(text)
             val range = digits?.range ?: text.indices
-            if (!text.isEmpty()) {
-                span.setSpan(
-                    ForegroundColorSpan(colour),
-                    range.first,
-                    range.last + 1,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
+            span.setSpan(
+                ForegroundColorSpan(colour),
+                range.first,
+                range.last + 1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             return span
         }
 

@@ -6,17 +6,21 @@
     <string name="tagline">A quiet start to the day.</string>
     <string name="tagline_evening">A quiet end to the day.</string>
 
-    <string name="keep_this">Keep this one</string>
-    <string name="kept_already">Kept ✓</string>
-    <string name="another">Another</string>
+    <!-- The two buttons under the preview card -->
+    <string name="keep_this">Show this more often</string>
+    <string name="kept_already">✓ Showing more often</string>
+    <string name="another">Show me another</string>
 
-    <string name="sec_your_words">Your own words</string>
-    <string name="hint_new_word">Write one in your own words…</string>
-    <string name="add_to_pool">Add to the pool</string>
+    <!-- Writing your own -->
+    <string name="sec_your_words">Add your own</string>
+    <string name="your_words_hint">Write an affirmation in your own words. It joins the rotation and can appear on the widget on any day, alongside the ones that came with the app.</string>
+    <string name="hint_new_word">In your own words…</string>
+    <string name="add_to_pool">Add</string>
 
-    <string name="sec_kept">Kept</string>
-    <string name="kept_hint">Lines you keep come back roughly one morning in four. Tap Keep this one above when something lands.</string>
-    <string name="kept_empty">Nothing kept yet.</string>
+    <!-- Lines marked to come round more often -->
+    <string name="sec_kept">Shown more often</string>
+    <string name="kept_hint">These lines come up about one day in four, instead of waiting their turn in the full list. Tap <b>Show this more often</b> above when one lands.</string>
+    <string name="kept_empty">None yet. When a line lands, tap <b>Show this more often</b> above and it will come back around every few days instead of rarely.</string>
 
     <string name="sec_year_line">The year line</string>
     <string name="yl_day_of_year">Day 252 · 2026</string>
@@ -38,9 +42,9 @@
     <string name="size_large">Large</string>
 
     <string name="sec_placing">Placing it</string>
-    <string name="how_to_home">Home screen: press and hold an empty spot, tap Widgets, find Daily Light, drag it where you want it.</string>
+    <string name="how_to_home">Home screen: press and hold an empty spot, tap Widgets, find Daily Light, drag it where you want it. Long-press it afterwards to resize.</string>
     <string name="lock_screen_title">Lock screen</string>
     <string name="how_to_lock">On One UI 8.5 and newer: press and hold the lock screen, tap the pencil, then Widgets, and add Daily Light there too. On older versions Samsung only allows its own widgets on the lock screen — this one will appear there after you update.</string>
 
-    <string name="tap_hint">On the widget, tap the words to draw a different pairing and tap the date to come back here. Reshuffling lasts the day; tomorrow returns to its own words.</string>
+    <string name="tap_hint">On the widget, tap the words to draw a different pairing and tap the date to come back here. A reshuffle lasts the day; tomorrow returns to its own words.</string>
 </resources>

@@ -142,9 +142,23 @@ object DailyContent {
         )
     }
 
+    // ------------------------------------------------------------------
+    // Type sizes. Every line on the card scales, not just the affirmation —
+    // a text-size setting that leaves the date and year line untouched isn't
+    // a text-size setting. Bases below are the Small (1.0) values.
+    // ------------------------------------------------------------------
+
+    /** The letterspaced weekday label. */
+    fun weekdaySizeSp(scale: TextScale): Float = 11f * scale.factor
+
+    fun dateSizeSp(scale: TextScale): Float = 16f * scale.factor
+
+    /** "Day 252 · 2026". Was 10sp and fixed, which was far too small. */
+    fun yearLineSizeSp(scale: TextScale): Float = 12f * scale.factor
+
     /**
-     * Long lines get a smaller face so nothing is clipped at 4x2. Multiplied
-     * by the person's own text-size choice.
+     * Long lines get a smaller face so nothing is clipped at 4x2, then the
+     * person's own choice is applied on top.
      */
     fun affirmationSizeSp(text: String, scale: TextScale): Float {
         val base = when {
@@ -157,7 +171,7 @@ object DailyContent {
     }
 
     fun thoughtSizeSp(text: String, scale: TextScale): Float {
-        val base = if (text.length > 110) 11f else 12f
+        val base = if (text.length > 110) 11.5f else 12.5f
         return base * scale.factor
     }
 }

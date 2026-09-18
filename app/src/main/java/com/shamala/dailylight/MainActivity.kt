@@ -148,8 +148,17 @@ class MainActivity : Activity() {
             else R.drawable.widget_bg_dawn
         findViewById<View>(R.id.widget_root).setBackgroundResource(background)
 
-        findViewById<TextView>(R.id.tv_weekday).text = day.weekday
-        findViewById<TextView>(R.id.tv_date).text = day.date
+        val weekday = findViewById<TextView>(R.id.tv_weekday)
+        weekday.text = day.weekday
+        weekday.setTextSize(
+            TypedValue.COMPLEX_UNIT_SP, DailyContent.weekdaySizeSp(scale)
+        )
+
+        val date = findViewById<TextView>(R.id.tv_date)
+        date.text = day.date
+        date.setTextSize(
+            TypedValue.COMPLEX_UNIT_SP, DailyContent.dateSizeSp(scale)
+        )
 
         val affirmation = findViewById<TextView>(R.id.tv_affirmation)
         affirmation.text = day.affirmation
@@ -166,6 +175,9 @@ class MainActivity : Activity() {
         )
 
         val yearLine = findViewById<TextView>(R.id.tv_yearline)
+        yearLine.setTextSize(
+            TypedValue.COMPLEX_UNIT_SP, DailyContent.yearLineSizeSp(scale)
+        )
         if (day.yearLine.isEmpty()) {
             yearLine.visibility = View.GONE
         } else {

@@ -89,6 +89,12 @@
 
         <LinearLayout style="@style/Card">
 
+            <TextView
+                style="@style/Hint"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/your_words_hint" />
+
             <EditText
                 android:id="@+id/et_new_word"
                 android:layout_width="match_parent"

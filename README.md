@@ -21,7 +21,8 @@ nothing — no account, no internet, no permissions beyond restarting after a re
 1. **Open the project.** Android Studio → *Open* → choose the `DailyLight` folder. Let it sync.
 2. **Set the Gradle JDK to 21.** Settings → *Build, Execution, Deployment* → *Build Tools* → *Gradle*
    → **Gradle JDK** → *Download JDK…* → version **21**. Recent Android Studio bundles Java 25, which
-   Gradle 8.11.1 refuses.
+   Gradle 8.13 refuses. (`gradle/gradle-daemon-jvm.properties` already asks for 21, so newer
+   Android Studio versions may pick it up on their own.)
 3. **Turn on developer mode.** Settings → *About phone* → *Software information* → tap **Build
    number** seven times. Then Settings → *Developer options* → **USB debugging** on (and **Install
    via USB** if you see it).
@@ -38,8 +39,11 @@ Then place it:
 
 ### Building from a terminal
 
-`gradlew` / `gradlew.bat` are not included. Run `gradle wrapper` once to create them, or just use
-Android Studio, which reads `gradle/wrapper/gradle-wrapper.properties` directly.
+```
+./gradlew assembleDebug
+```
+
+The APK lands in `app/build/outputs/apk/debug/`. The wrapper downloads Gradle 8.13 on first run.
 
 ---
 
@@ -50,9 +54,11 @@ tomorrow returns to its own words rather than inheriting yesterday's fidgeting.
 
 **Tap the date** to open the app, where you can:
 
-- **Keep this one** — kept lines resurface roughly one day in four. Morning and evening favourites
-  are kept separately, so an evening line comes back in the evening.
-- **Add your own words** — anything you write joins the pool and can come up on any day.
+- **Show this more often** — marked lines come up about one day in four, instead of waiting their
+  turn in the full list. Morning and evening lines are kept separately, so an evening line comes
+  back in the evening.
+- **Add your own** — anything you write joins the pool and can come up on any day.
+- **Show me another** — the same reshuffle as tapping the words on the widget.
 - Choose how the year line reads, when the evening voice starts, whether the colours shift, and the
   text size.
 
@@ -68,7 +74,8 @@ or rewrite freely; the rotation adapts to whatever length the lists are.
 `dawn_*`, `day_*`, `dusk_*`, `night_*`. Change a set and that time of day follows.
 
 **The type.** `app/src/main/res/font/` holds three static cuts of Lora. Drop in a different `.ttf`
-(lowercase filename, letters and underscores only) and point `widget_daily.xml` at it.
+(lowercase filename, letters and underscores only) and point both `CardRenderer.kt` (which paints
+the widget's text) and `widget_daily.xml` (the in-app preview and fallback) at it.
 
 **The layout.** `app/src/main/res/layout/widget_daily.xml`. Home-screen widgets can only use a
 restricted set of views — `LinearLayout`, `FrameLayout`, `RelativeLayout`, `TextView`, `ImageView`,
@@ -97,8 +104,9 @@ make sure Daily Light isn't in *Sleeping apps*.
 app/src/main/
 ├── java/com/shamala/dailylight/
 │   ├── Content.kt              the four word pools
-│   ├── Prefs.kt                settings, her own words, kept favourites
+│   ├── Prefs.kt                settings, her own words, lines shown more often
 │   ├── DailyContent.kt         date, year progress, which words this moment gets
+│   ├── CardRenderer.kt         paints the date and words in Lora, as bitmaps
 │   ├── DailyWidgetProvider.kt  draws the widget, schedules the daily refresh
 │   └── MainActivity.kt         settings screen and word editor
 └── res/

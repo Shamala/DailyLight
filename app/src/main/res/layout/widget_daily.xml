@@ -35,8 +35,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-light"
-                android:textSize="10sp"
-                android:letterSpacing="0.22"
+                android:textSize="11sp"
+                android:letterSpacing="0.2"
                 android:textColor="@color/day_label"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -46,9 +46,9 @@
                 android:id="@+id/tv_yearline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:textSize="10sp"
-                android:letterSpacing="0.04"
+                android:fontFamily="sans-serif"
+                android:textSize="12sp"
+                android:letterSpacing="0.02"
                 android:textColor="@color/muted"
                 android:maxLines="1"
                 android:text="Day 252 · 2026" />
@@ -60,11 +60,27 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/lora_medium"
-            android:textSize="15sp"
+            android:textSize="16sp"
             android:textColor="@color/cream_dim"
             android:maxLines="1"
             android:ellipsize="end"
-            android:text="9 September 2026" />
+            android:text="17 September 2026" />
+
+        <!--
+          The same date, painted by us in Lora. The provider hides the text
+          view above and shows this whenever the bitmap renders, so the
+          launcher's system font can't override the typeface.
+        -->
+        <ImageView
+            android:id="@+id/img_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            android:visibility="gone"
+            android:importantForAccessibility="no"
+            android:contentDescription="@null" />
 
         <!-- How far along the year is. Doubles as the rule under the date. -->
         <ProgressBar
@@ -79,12 +95,35 @@
             android:progressDrawable="@drawable/progress_year" />
     </LinearLayout>
 
-    <!-- Words zone — tapping here draws a different pairing -->
+    <!--
+      Words zone — tapping here draws a different pairing.
+
+      wrap_content plus weight 1: it measures at its natural height, then any
+      space left over in the widget's cells is handed to it, and gravity
+      centres the words inside that. So at a smaller text size the slack
+      splits above and below the words instead of pooling at the bottom.
+      When there is no slack it behaves exactly as wrap_content, so nothing
+      gets squeezed on a short widget.
+    -->
     <LinearLayout
         android:id="@+id/words_zone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
         android:orientation="vertical">
+
+        <!-- Affirmation and thought, painted in Lora as one image. -->
+        <ImageView
+            android:id="@+id/img_words"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            android:visibility="gone"
+            android:importantForAccessibility="no"
+            android:contentDescription="@null" />
 
         <TextView
             android:id="@+id/tv_affirmation"
@@ -95,7 +134,7 @@
             android:textSize="19sp"
             android:lineSpacingExtra="5dp"
             android:textColor="@color/cream"
-            android:maxLines="4"
+            android:maxLines="5"
             android:ellipsize="end"
             android:text="I begin again, and beginning again is not starting over." />
 
@@ -105,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:fontFamily="@font/lora_regular"
-            android:textSize="12sp"
+            android:textSize="12.5sp"
             android:lineSpacingExtra="3dp"
             android:textColor="@color/muted"
             android:maxLines="3"

@@ -22,8 +22,14 @@ enum class YearLineStyle {
     }
 }
 
+/**
+ * Small is the size the card has always been. Medium and Large go up from
+ * there — the scale only ever grows, because nobody has ever wanted this
+ * smaller. Applied to every line on the card, the date and year line
+ * included, not just the affirmation.
+ */
 enum class TextScale(val factor: Float) {
-    SMALL(0.88f), MEDIUM(1.0f), LARGE(1.14f);
+    SMALL(1.0f), MEDIUM(1.13f), LARGE(1.28f);
 
     companion object {
         fun from(name: String?): TextScale =
