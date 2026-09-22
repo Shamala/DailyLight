@@ -101,6 +101,12 @@ class MainActivity : Activity() {
             applied()
         }
 
+        findViewById<Switch>(R.id.sw_dark_mode).setOnCheckedChangeListener { _, on ->
+            if (binding) return@setOnCheckedChangeListener
+            Prefs.setDarkMode(this, on)
+            applied()
+        }
+
         findViewById<Switch>(R.id.sw_evening).setOnCheckedChangeListener { _, on ->
             if (binding) return@setOnCheckedChangeListener
             Prefs.setEveningEnabled(this, on)
@@ -143,25 +149,33 @@ class MainActivity : Activity() {
 
         // --- the card, drawn the same way the widget draws it ---
 
+        val isDark = Prefs.isDarkMode(this)
+
         val background =
-            if (Prefs.shiftColours(this)) DailyWidgetProvider.backgroundFor(day.phase)
-            else R.drawable.widget_bg_dawn
+            if (Prefs.shiftColours(this)) {
+                DailyWidgetProvider.backgroundFor(day.phase, isDark)
+            } else {
+                if (isDark) R.drawable.widget_bg_dawn else R.drawable.widget_bg_dawn_light
+            }
         findViewById<View>(R.id.widget_root).setBackgroundResource(background)
 
         val weekday = findViewById<TextView>(R.id.tv_weekday)
         weekday.text = day.weekday
+        weekday.setTextColor(getColor(if (isDark) R.color.day_label else R.color.label_dark))
         weekday.setTextSize(
             TypedValue.COMPLEX_UNIT_SP, DailyContent.weekdaySizeSp(scale)
         )
 
         val date = findViewById<TextView>(R.id.tv_date)
         date.text = day.date
+        date.setTextColor(getColor(if (isDark) R.color.cream_dim else R.color.text_dark_dim))
         date.setTextSize(
             TypedValue.COMPLEX_UNIT_SP, DailyContent.dateSizeSp(scale)
         )
 
         val affirmation = findViewById<TextView>(R.id.tv_affirmation)
         affirmation.text = day.affirmation
+        affirmation.setTextColor(getColor(if (isDark) R.color.cream else R.color.text_dark))
         affirmation.setTextSize(
             TypedValue.COMPLEX_UNIT_SP,
             DailyContent.affirmationSizeSp(day.affirmation, scale)
@@ -169,29 +183,54 @@ class MainActivity : Activity() {
 
         val thought = findViewById<TextView>(R.id.tv_thought)
         thought.text = day.thought
+        thought.setTextColor(getColor(if (isDark) R.color.muted else R.color.text_muted_dark))
         thought.setTextSize(
             TypedValue.COMPLEX_UNIT_SP,
             DailyContent.thoughtSizeSp(day.thought, scale)
         )
 
         val yearLine = findViewById<TextView>(R.id.tv_yearline)
+        yearLine.setTextColor(getColor(if (isDark) R.color.muted else R.color.text_muted_dark))
         yearLine.setTextSize(
             TypedValue.COMPLEX_UNIT_SP, DailyContent.yearLineSizeSp(scale)
         )
-        if (day.yearLine.isEmpty()) {
-            yearLine.visibility = View.GONE
-        } else {
-            yearLine.visibility = View.VISIBLE
-            yearLine.text = DailyWidgetProvider.accented(this, day.yearLine)
-        }
 
-        val bar = findViewById<ProgressBar>(R.id.pb_year)
-        if (Prefs.showBar(this)) {
-            bar.visibility = View.VISIBLE
-            bar.max = 1000
-            bar.progress = day.yearProgress
-        } else {
-            bar.visibility = View.GONE
+        val showText = day.yearLine.isNotEmpty()
+        val showBar = Prefs.showBar(this)
+
+        val flContainer = findViewById<View>(R.id.fl_year_container)
+        val llInline = findViewById<View>(R.id.ll_year_inline)
+        val flFull = findViewById<View>(R.id.fl_year_full)
+        val pbInlineDark = findViewById<ProgressBar>(R.id.pb_year_inline)
+        val pbInlineLight = findViewById<ProgressBar>(R.id.pb_year_light_inline)
+        val pbFullDark = findViewById<ProgressBar>(R.id.pb_year_full)
+        val pbFullLight = findViewById<ProgressBar>(R.id.pb_year_light_full)
+
+        flContainer.visibility = View.GONE
+        llInline.visibility = View.GONE
+        flFull.visibility = View.GONE
+
+        if (showBar) {
+            flContainer.visibility = View.VISIBLE
+            if (showText) {
+                llInline.visibility = View.VISIBLE
+                yearLine.text = DailyWidgetProvider.accented(this, day.yearLine, isDark)
+                
+                pbInlineDark.visibility = if (isDark) View.VISIBLE else View.GONE
+                pbInlineLight.visibility = if (isDark) View.GONE else View.VISIBLE
+                pbInlineDark.progress = day.yearProgress
+                pbInlineLight.progress = day.yearProgress
+                pbInlineDark.max = 1000
+                pbInlineLight.max = 1000
+            } else {
+                flFull.visibility = View.VISIBLE
+                pbFullDark.visibility = if (isDark) View.VISIBLE else View.GONE
+                pbFullLight.visibility = if (isDark) View.GONE else View.VISIBLE
+                pbFullDark.progress = day.yearProgress
+                pbFullLight.progress = day.yearProgress
+                pbFullDark.max = 1000
+                pbFullLight.max = 1000
+            }
         }
 
         // --- the chrome around it ---
@@ -223,6 +262,7 @@ class MainActivity : Activity() {
             }
         ).isChecked = true
 
+        findViewById<Switch>(R.id.sw_dark_mode).isChecked = Prefs.isDarkMode(this)
         findViewById<Switch>(R.id.sw_bar).isChecked = Prefs.showBar(this)
         findViewById<Switch>(R.id.sw_evening).isChecked = Prefs.eveningEnabled(this)
         findViewById<Switch>(R.id.sw_shift).isChecked = Prefs.shiftColours(this)

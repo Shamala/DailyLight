@@ -45,6 +45,41 @@
     <color name="day_label">#9C90AE</color>
     <color name="accent">#F0BC98</color>
 
+    <!-- Light Mode Alternates -->
+    <color name="text_dark">#221F3E</color>
+    <color name="text_dark_dim">#3B3A66</color>
+    <color name="text_muted_dark">#565081</color>
+    <color name="label_dark">#4A2F55</color>
+    <color name="accent_dark">#1F1C3C</color> <!-- Much darker indigo, essentially black-purple for high contrast -->
+
+    <!-- Light Mode Dawn (Sunrise) — Soft peach to pale yellow -->
+    <color name="dawn_light_start">#FFDFB9</color>
+    <color name="dawn_light_center">#FFEBC4</color>
+    <color name="dawn_light_end">#FFF4D4</color>
+    <color name="dawn_light_glow">#88FFFFFF</color>
+    <color name="dawn_light_glow_end">#00FFFFFF</color>
+
+    <!-- Light Mode Day (Noon) — Bright sky blue to pale cyan -->
+    <color name="day_light_start">#BBE2FA</color>
+    <color name="day_light_center">#D6EEFB</color>
+    <color name="day_light_end">#F0F8FF</color>
+    <color name="day_light_glow">#99FFFFFF</color>
+    <color name="day_light_glow_end">#00FFFFFF</color>
+
+    <!-- Light Mode Dusk (Sunset) — Warm pink to soft lilac -->
+    <color name="dusk_light_start">#FFC4D9</color>
+    <color name="dusk_light_center">#E6C8E6</color>
+    <color name="dusk_light_end">#D8D8F6</color>
+    <color name="dusk_light_glow">#77FFFFFF</color>
+    <color name="dusk_light_glow_end">#00FFFFFF</color>
+
+    <!-- Light Mode Night (Moonlight) — Cool pale lavender to light grey-blue -->
+    <color name="night_light_start">#D1D1EB</color>
+    <color name="night_light_center">#C4CDE0</color>
+    <color name="night_light_end">#D5D9E5</color>
+    <color name="night_light_glow">#55FFFFFF</color>
+    <color name="night_light_glow_end">#00FFFFFF</color>
+
     <!-- The year bar -->
     <color name="bar_track">#1FFFFFFF</color>
     <color name="bar_fill">#8CF0BC98</color>

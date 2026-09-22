@@ -86,11 +86,22 @@ class DailyWidgetProvider : AppWidgetProvider() {
             }
         }
 
-        fun backgroundFor(phase: Phase): Int = when (phase) {
-            Phase.DAWN -> R.drawable.widget_bg_dawn
-            Phase.DAY -> R.drawable.widget_bg_day
-            Phase.DUSK -> R.drawable.widget_bg_dusk
-            Phase.NIGHT -> R.drawable.widget_bg_night
+        fun backgroundFor(phase: Phase, isDark: Boolean): Int {
+            return if (isDark) {
+                when (phase) {
+                    Phase.DAWN -> R.drawable.widget_bg_dawn
+                    Phase.DAY -> R.drawable.widget_bg_day
+                    Phase.DUSK -> R.drawable.widget_bg_dusk
+                    Phase.NIGHT -> R.drawable.widget_bg_night
+                }
+            } else {
+                when (phase) {
+                    Phase.DAWN -> R.drawable.widget_bg_dawn_light
+                    Phase.DAY -> R.drawable.widget_bg_day_light
+                    Phase.DUSK -> R.drawable.widget_bg_dusk_light
+                    Phase.NIGHT -> R.drawable.widget_bg_night_light
+                }
+            }
         }
 
         /** Usable text width in pixels for this particular placed widget. */
@@ -116,11 +127,30 @@ class DailyWidgetProvider : AppWidgetProvider() {
         ): RemoteViews {
             val day = DailyContent.now(context)
             val scale = Prefs.textScale(context)
+            val isDark = Prefs.isDarkMode(context)
             val views = RemoteViews(context.packageName, R.layout.widget_daily)
 
+            // Adjust text colors based on dark mode preference
+            if (isDark) {
+                views.setTextColor(R.id.tv_weekday, context.getColor(R.color.day_label))
+                views.setTextColor(R.id.tv_date, context.getColor(R.color.cream_dim))
+                views.setTextColor(R.id.tv_affirmation, context.getColor(R.color.cream))
+                views.setTextColor(R.id.tv_thought, context.getColor(R.color.muted))
+                views.setTextColor(R.id.tv_yearline, context.getColor(R.color.muted))
+            } else {
+                views.setTextColor(R.id.tv_weekday, context.getColor(R.color.label_dark))
+                views.setTextColor(R.id.tv_date, context.getColor(R.color.text_dark_dim))
+                views.setTextColor(R.id.tv_affirmation, context.getColor(R.color.text_dark))
+                views.setTextColor(R.id.tv_thought, context.getColor(R.color.text_muted_dark))
+                views.setTextColor(R.id.tv_yearline, context.getColor(R.color.text_muted_dark))
+            }
+
             val background =
-                if (Prefs.shiftColours(context)) backgroundFor(day.phase)
-                else R.drawable.widget_bg_dawn
+                if (Prefs.shiftColours(context)) {
+                    backgroundFor(day.phase, isDark)
+                } else {
+                    if (isDark) R.drawable.widget_bg_dawn else R.drawable.widget_bg_dawn_light
+                }
             views.setInt(R.id.widget_root, "setBackgroundResource", background)
 
             views.setTextViewText(R.id.tv_weekday, day.weekday)
@@ -138,7 +168,7 @@ class DailyWidgetProvider : AppWidgetProvider() {
             val widthPx = contentWidthPx(context, manager, appWidgetId)
 
             val dateBitmap = CardRenderer.date(
-                context, day.date, widthPx, DailyContent.dateSizeSp(scale)
+                context, day.date, widthPx, DailyContent.dateSizeSp(scale), isDark
             )
             if (dateBitmap != null) {
                 views.setImageViewBitmap(R.id.img_date, dateBitmap)
@@ -155,7 +185,7 @@ class DailyWidgetProvider : AppWidgetProvider() {
             }
 
             val wordsBitmap = CardRenderer.words(
-                context, day.affirmation, day.thought, widthPx, scale
+                context, day.affirmation, day.thought, widthPx, scale, isDark
             )
             if (wordsBitmap != null) {
                 views.setImageViewBitmap(R.id.img_words, wordsBitmap)
@@ -184,18 +214,34 @@ class DailyWidgetProvider : AppWidgetProvider() {
                 R.id.tv_yearline, TypedValue.COMPLEX_UNIT_SP,
                 DailyContent.yearLineSizeSp(scale)
             )
-            if (day.yearLine.isEmpty()) {
-                views.setViewVisibility(R.id.tv_yearline, View.GONE)
-            } else {
-                views.setViewVisibility(R.id.tv_yearline, View.VISIBLE)
-                views.setTextViewText(R.id.tv_yearline, accented(context, day.yearLine))
-            }
 
-            if (Prefs.showBar(context)) {
-                views.setViewVisibility(R.id.pb_year, View.VISIBLE)
-                views.setProgressBar(R.id.pb_year, 1000, day.yearProgress, false)
-            } else {
-                views.setViewVisibility(R.id.pb_year, View.GONE)
+            val showText = day.yearLine.isNotEmpty()
+            val showBar = Prefs.showBar(context)
+
+            // Hide both containers initially
+            views.setViewVisibility(R.id.fl_year_container, View.GONE)
+            views.setViewVisibility(R.id.ll_year_inline, View.GONE)
+            views.setViewVisibility(R.id.fl_year_full, View.GONE)
+
+            if (showBar) {
+                views.setViewVisibility(R.id.fl_year_container, View.VISIBLE)
+                if (showText) {
+                    // Inline mode
+                    views.setViewVisibility(R.id.ll_year_inline, View.VISIBLE)
+                    views.setTextViewText(R.id.tv_yearline, accented(context, day.yearLine, isDark))
+                    
+                    views.setViewVisibility(R.id.pb_year_inline, if (isDark) View.VISIBLE else View.GONE)
+                    views.setViewVisibility(R.id.pb_year_light_inline, if (isDark) View.GONE else View.VISIBLE)
+                    views.setProgressBar(R.id.pb_year_inline, 1000, day.yearProgress, false)
+                    views.setProgressBar(R.id.pb_year_light_inline, 1000, day.yearProgress, false)
+                } else {
+                    // Full width bar only mode
+                    views.setViewVisibility(R.id.fl_year_full, View.VISIBLE)
+                    views.setViewVisibility(R.id.pb_year_full, if (isDark) View.VISIBLE else View.GONE)
+                    views.setViewVisibility(R.id.pb_year_light_full, if (isDark) View.GONE else View.VISIBLE)
+                    views.setProgressBar(R.id.pb_year_full, 1000, day.yearProgress, false)
+                    views.setProgressBar(R.id.pb_year_light_full, 1000, day.yearProgress, false)
+                }
             }
 
             // --- the two tap zones -----------------------------------------
@@ -226,10 +272,10 @@ class DailyWidgetProvider : AppWidgetProvider() {
         }
 
         /** Warms the number, so the eye lands on it without it shouting. */
-        fun accented(context: Context, text: String): CharSequence {
+        fun accented(context: Context, text: String, isDark: Boolean = true): CharSequence {
             val span = SpannableString(text)
             if (text.isEmpty()) return span
-            val colour = context.getColor(R.color.accent)
+            val colour = context.getColor(if (isDark) R.color.accent else R.color.accent_dark)
             val digits = Regex("\\d+").find(text)
             val range = digits?.range ?: text.indices
             span.setSpan(

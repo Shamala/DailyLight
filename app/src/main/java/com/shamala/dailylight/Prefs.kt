@@ -48,6 +48,14 @@ enum class Voice { MORNING, EVENING }
 object Prefs {
 
     private const val FILE = "daily_light_prefs"
+    private const val KEY_DARK_MODE = "dark_mode"
+
+    fun isDarkMode(context: Context): Boolean =
+        p(context).getBoolean(KEY_DARK_MODE, true)
+
+    fun setDarkMode(context: Context, darkMode: Boolean) {
+        p(context).edit().putBoolean(KEY_DARK_MODE, darkMode).apply()
+    }
 
     private const val K_OFFSET = "shuffle_offset"
     private const val K_OFFSET_DATE = "shuffle_offset_date"

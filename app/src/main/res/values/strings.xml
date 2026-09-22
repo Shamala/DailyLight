@@ -27,7 +27,7 @@
     <string name="yl_days_lived">252 days lived this year</string>
     <string name="yl_bar_only">Just the bar, no numbers</string>
     <string name="yl_countdown">114 days left in 2026</string>
-    <string name="show_bar">Show the year bar</string>
+    <string name="show_bar">Show year progress</string>
 
     <string name="sec_evening">Evening</string>
     <string name="evening_voice">A closing voice at night</string>

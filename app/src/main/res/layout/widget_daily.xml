@@ -41,17 +41,6 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:text="WEDNESDAY" />
-
-            <TextView
-                android:id="@+id/tv_yearline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:textSize="12sp"
-                android:letterSpacing="0.02"
-                android:textColor="@color/muted"
-                android:maxLines="1"
-                android:text="Day 252 · 2026" />
         </LinearLayout>
 
         <TextView
@@ -82,17 +71,103 @@
             android:importantForAccessibility="no"
             android:contentDescription="@null" />
 
-        <!-- How far along the year is. Doubles as the rule under the date. -->
-        <ProgressBar
-            android:id="@+id/pb_year"
-            style="@android:style/Widget.ProgressBar.Horizontal"
+        <!-- Year Tracker Container -->
+        <FrameLayout
+            android:id="@+id/fl_year_container"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_marginTop="14dp"
-            android:max="1000"
-            android:progress="690"
-            android:indeterminate="false"
-            android:progressDrawable="@drawable/progress_year" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <!-- Inline Capsule (When text is visible) -->
+            <LinearLayout
+                android:id="@+id/ll_year_inline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="6dp">
+
+                    <ProgressBar
+                        android:id="@+id/pb_year_inline"
+                        style="@android:style/Widget.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:max="1000"
+                        android:progress="690"
+                        android:indeterminate="false"
+                        android:progressDrawable="@drawable/progress_year" />
+
+                    <ProgressBar
+                        android:id="@+id/pb_year_light_inline"
+                        style="@android:style/Widget.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:max="1000"
+                        android:progress="690"
+                        android:indeterminate="false"
+                        android:visibility="gone"
+                        android:progressDrawable="@drawable/progress_year_light" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tv_yearline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.02"
+                    android:textColor="@color/muted"
+                    android:maxLines="1"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    tools:text="Day 252 · 2026" />
+            </LinearLayout>
+
+            <!-- Full-Width Divider (When Bar Only is selected) -->
+            <FrameLayout
+                android:id="@+id/fl_year_full"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/pb_year_full"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:max="1000"
+                    android:progress="690"
+                    android:indeterminate="false"
+                    android:progressDrawable="@drawable/progress_year" />
+
+                <ProgressBar
+                    android:id="@+id/pb_year_light_full"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:max="1000"
+                    android:progress="690"
+                    android:indeterminate="false"
+                    android:visibility="gone"
+                    android:progressDrawable="@drawable/progress_year_light" />
+            </FrameLayout>
+        </FrameLayout>
+
+        <!-- Subtle divider between header and affirmation -->
+        <ImageView
+            android:id="@+id/rule"
+            android:layout_width="32dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="18dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/muted"
+            android:alpha="0.3"
+            android:importantForAccessibility="no"
+            android:contentDescription="@null" />
     </LinearLayout>
 
     <!--
@@ -134,6 +209,7 @@
             android:textSize="19sp"
             android:lineSpacingExtra="5dp"
             android:textColor="@color/cream"
+            android:gravity="center_horizontal"
             android:maxLines="5"
             android:ellipsize="end"
             android:text="I begin again, and beginning again is not starting over." />
@@ -147,6 +223,7 @@
             android:textSize="12.5sp"
             android:lineSpacingExtra="3dp"
             android:textColor="@color/muted"
+            android:gravity="center_horizontal"
             android:maxLines="3"
             android:ellipsize="end"
             android:text="Progress hides in the days that felt like nothing happened." />

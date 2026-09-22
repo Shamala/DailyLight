@@ -58,10 +58,11 @@ object CardRenderer {
         paint: TextPaint,
         widthPx: Int,
         maxLines: Int,
-        extraPx: Float
+        extraPx: Float,
+        alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
     ): StaticLayout =
         StaticLayout.Builder.obtain(text, 0, text.length, paint, widthPx)
-            .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+            .setAlignment(alignment)
             .setLineSpacing(extraPx, 1f)
             .setIncludePad(false)
             .setMaxLines(maxLines)
@@ -69,11 +70,11 @@ object CardRenderer {
             .build()
 
     /** The date line, on its own. */
-    fun date(context: Context, text: String, widthPx: Int, sizeSp: Float): Bitmap? {
+    fun date(context: Context, text: String, widthPx: Int, sizeSp: Float, isDark: Boolean = true): Bitmap? {
         val width = widthPx.coerceIn(1, MAX_WIDTH_PX)
         val p = paint(
             context, font(context, R.font.lora_medium), sizeSp,
-            context.getColor(R.color.cream_dim)
+            context.getColor(if (isDark) R.color.cream_dim else R.color.text_dark_dim)
         )
         val l = layout(text, p, width, 1, 0f)
         return draw(width, l.height) { canvas -> l.draw(canvas) }
@@ -88,23 +89,24 @@ object CardRenderer {
         affirmation: String,
         thought: String,
         widthPx: Int,
-        scale: TextScale
+        scale: TextScale,
+        isDark: Boolean = true
     ): Bitmap? {
         val width = widthPx.coerceIn(1, MAX_WIDTH_PX)
 
         val affPaint = paint(
             context, font(context, R.font.lora_italic),
             DailyContent.affirmationSizeSp(affirmation, scale),
-            context.getColor(R.color.cream)
+            context.getColor(if (isDark) R.color.cream else R.color.text_dark)
         )
         val thoPaint = paint(
             context, font(context, R.font.lora_regular),
             DailyContent.thoughtSizeSp(thought, scale),
-            context.getColor(R.color.muted)
+            context.getColor(if (isDark) R.color.muted else R.color.text_muted_dark)
         )
 
-        val affLayout = layout(affirmation, affPaint, width, 5, dp(context, 5f))
-        val thoLayout = layout(thought, thoPaint, width, 3, dp(context, 3f))
+        val affLayout = layout(affirmation, affPaint, width, 5, dp(context, 5f), Layout.Alignment.ALIGN_CENTER)
+        val thoLayout = layout(thought, thoPaint, width, 3, dp(context, 3f), Layout.Alignment.ALIGN_CENTER)
 
         val gap = dp(context, 14f)
         val height = (affLayout.height + gap + thoLayout.height).toInt()

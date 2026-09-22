@@ -152,6 +152,20 @@
                 android:orientation="vertical" />
         </LinearLayout>
 
+        <!-- ============ Theme Settings ============ -->
+
+        <TextView
+            style="@style/SectionHeading"
+            android:text="THEME" />
+
+        <LinearLayout style="@style/Card">
+
+            <Switch
+                android:id="@+id/sw_dark_mode"
+                style="@style/Toggle"
+                android:text="Dark Mode" />
+        </LinearLayout>
+
         <!-- ============ The year line ============ -->
 
         <TextView
