@@ -219,14 +219,12 @@ class DailyWidgetProvider : AppWidgetProvider() {
             val showBar = Prefs.showBar(context)
 
             // Hide both containers initially
-            views.setViewVisibility(R.id.fl_year_container, View.GONE)
             views.setViewVisibility(R.id.ll_year_inline, View.GONE)
             views.setViewVisibility(R.id.fl_year_full, View.GONE)
 
             if (showBar) {
-                views.setViewVisibility(R.id.fl_year_container, View.VISIBLE)
                 if (showText) {
-                    // Inline mode
+                    // Inline mode on top right
                     views.setViewVisibility(R.id.ll_year_inline, View.VISIBLE)
                     views.setTextViewText(R.id.tv_yearline, accented(context, day.yearLine, isDark))
                     

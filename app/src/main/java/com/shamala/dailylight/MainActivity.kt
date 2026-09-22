@@ -198,7 +198,6 @@ class MainActivity : Activity() {
         val showText = day.yearLine.isNotEmpty()
         val showBar = Prefs.showBar(this)
 
-        val flContainer = findViewById<View>(R.id.fl_year_container)
         val llInline = findViewById<View>(R.id.ll_year_inline)
         val flFull = findViewById<View>(R.id.fl_year_full)
         val pbInlineDark = findViewById<ProgressBar>(R.id.pb_year_inline)
@@ -206,12 +205,10 @@ class MainActivity : Activity() {
         val pbFullDark = findViewById<ProgressBar>(R.id.pb_year_full)
         val pbFullLight = findViewById<ProgressBar>(R.id.pb_year_light_full)
 
-        flContainer.visibility = View.GONE
         llInline.visibility = View.GONE
         flFull.visibility = View.GONE
 
         if (showBar) {
-            flContainer.visibility = View.VISIBLE
             if (showText) {
                 llInline.visibility = View.VISIBLE
                 yearLine.text = DailyWidgetProvider.accented(this, day.yearLine, isDark)
