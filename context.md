@@ -84,7 +84,7 @@ test to anything added: if the person has to guess the mechanism, the label is w
 ```
 app/src/main/java/com/shamala/dailylight/
 ├── Content.kt              four word pools (morning + evening × affirmations + thoughts)
-├── Prefs.kt                settings, her own words, "shown more often" lines; SharedPreferences
+├── Prefs.kt                settings, their own words, "shown more often" lines; SharedPreferences
 ├── DailyContent.kt         date, year progress, phase, voice, which words this moment gets
 ├── CardRenderer.kt         paints the Lora lines into bitmaps (see §5)
 ├── DailyWidgetProvider.kt  assembles the RemoteViews, schedules the daily refresh

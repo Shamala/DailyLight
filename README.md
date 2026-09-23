@@ -104,7 +104,7 @@ make sure Daily Light isn't in *Sleeping apps*.
 app/src/main/
 ├── java/com/shamala/dailylight/
 │   ├── Content.kt              the four word pools
-│   ├── Prefs.kt                settings, her own words, lines shown more often
+│   ├── Prefs.kt                settings, their own words, lines shown more often
 │   ├── DailyContent.kt         date, year progress, which words this moment gets
 │   ├── CardRenderer.kt         paints the date and words in Lora, as bitmaps
 │   ├── DailyWidgetProvider.kt  draws the widget, schedules the daily refresh

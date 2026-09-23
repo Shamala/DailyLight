@@ -121,7 +121,7 @@ object Prefs {
         p(c).edit().putString(K_TEXT_SCALE, v.name).apply()
     }
 
-    // --- her own words ---------------------------------------------------
+    // --- their own words -------------------------------------------------
     // Stored newline-separated so order is stable and the list is easy to
     // read back. Shown in both the morning and evening pools.
 

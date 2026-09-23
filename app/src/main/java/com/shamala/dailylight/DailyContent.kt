@@ -117,7 +117,7 @@ object DailyContent {
 
         val pool = basePool + custom
 
-        // Roughly one day in four is drawn from what she chose to keep.
+        // Roughly one day in four is drawn from what they chose to keep.
         val affirmation =
             if (favourites.isNotEmpty() && Math.floorMod(seed, 4) == 0) {
                 favourites[Math.floorMod(seed / 4, favourites.size)]
