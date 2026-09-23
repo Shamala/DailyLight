@@ -1,0 +1,22 @@
+Daily Light is a widget. There is no app to open every morning, no streak to keep, no notification asking for your attention. It sits on the home screen and shows you one thing when you unlock the phone:
+
+• the weekday and the full date
+• how far along the year is — a day count and a quiet bar, not a countdown
+• an affirmation for the day
+• a short thought to sit with
+
+The words hold still. Whatever the card says at seven in the morning, it still says at four in the afternoon, so it becomes something you recognise rather than something new to read. At an hour you choose, it turns to a closing voice for the evening — setting down, noticing what went well, permission to stop.
+
+The colours follow the light: indigo at dawn, cooler through the middle of the day, rose at dusk, deepest at night. You can turn that off and keep one palette, switch the whole card to a light theme, and choose the text size.
+
+MAKE IT YOURS
+
+Write your own affirmations and they join the rotation alongside the ones that come with the app. When a line lands, mark it and it comes back around every few days instead of rarely. Tap the words on the widget to draw a different pairing — the reshuffle lasts the day, and tomorrow returns to its own words.
+
+NO ACCOUNT, NO INTERNET, NO TRACKING
+
+Daily Light has no sign-in, makes no network requests, and collects nothing. It has no analytics and no advertising. Everything you write stays in the app's own storage on your phone. The only permission it asks for is the one that lets the date be correct again after you restart the phone.
+
+It works on the home screen, and on the lock screen where your phone allows widgets there. Resize it to the shape that suits your home screen.
+
+All the writing in the app is original. There are no quotations to attribute and nothing borrowed.
