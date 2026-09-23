@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg"
     android:fillViewport="true"
+    android:clipToPadding="false"
     android:scrollbars="none">
 
     <LinearLayout
+        android:id="@+id/content_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -156,14 +160,14 @@
 
         <TextView
             style="@style/SectionHeading"
-            android:text="THEME" />
+            android:text="@string/sec_theme" />
 
         <LinearLayout style="@style/Card">
 
             <Switch
                 android:id="@+id/sw_dark_mode"
                 style="@style/Toggle"
-                android:text="Dark Mode" />
+                android:text="@string/dark_mode" />
         </LinearLayout>
 
         <!-- ============ The year line ============ -->
@@ -232,7 +236,7 @@
                 android:fontFamily="@font/lora_medium"
                 android:textSize="15sp"
                 android:textColor="@color/cream_dim"
-                android:text="from 18:00" />
+                tools:text="from 18:00" />
 
             <SeekBar
                 android:id="@+id/sb_evening_hour"

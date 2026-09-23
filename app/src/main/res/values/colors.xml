@@ -80,9 +80,11 @@
     <color name="night_light_glow">#55FFFFFF</color>
     <color name="night_light_glow_end">#00FFFFFF</color>
 
-    <!-- The year bar -->
+    <!-- The year bar. Painted by CardRenderer.bar, not by a drawable. -->
     <color name="bar_track">#1FFFFFFF</color>
     <color name="bar_fill">#8CF0BC98</color>
+    <color name="bar_track_light">#1A1F1C3C</color>
+    <color name="bar_fill_light">#1F1C3C</color>
 
     <!-- The app screen -->
     <color name="app_bg">#14122A</color>

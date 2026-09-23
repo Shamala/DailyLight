@@ -6,6 +6,8 @@
   Two tap zones: the header opens the app, the words reshuffle.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -51,31 +53,21 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <FrameLayout
+                <!--
+                  Painted by CardRenderer.bar. A RemoteViews cannot swap a
+                  progress drawable and cannot tint one below API 31, so the
+                  bar used to be duplicated per theme; one image is the same
+                  picture with the duplication gone. The src here is only what
+                  the widget picker shows before the first real update.
+                -->
+                <ImageView
+                    android:id="@+id/img_year_inline"
                     android:layout_width="28dp"
-                    android:layout_height="5dp">
-
-                    <ProgressBar
-                        android:id="@+id/pb_year_inline"
-                        style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:max="1000"
-                        android:progress="690"
-                        android:indeterminate="false"
-                        android:progressDrawable="@drawable/progress_year" />
-
-                    <ProgressBar
-                        android:id="@+id/pb_year_light_inline"
-                        style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:max="1000"
-                        android:progress="690"
-                        android:indeterminate="false"
-                        android:visibility="gone"
-                        android:progressDrawable="@drawable/progress_year_light" />
-                </FrameLayout>
+                    android:layout_height="5dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/bar_preview"
+                    android:importantForAccessibility="no"
+                    android:contentDescription="@null" />
 
                 <TextView
                     android:id="@+id/tv_yearline"
@@ -83,11 +75,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:fontFamily="sans-serif-medium"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     android:letterSpacing="0.02"
                     android:textColor="@color/muted"
                     android:maxLines="1"
-                    xmlns:tools="http://schemas.android.com/tools"
                     tools:text="Day 252 · 2026" />
             </LinearLayout>
         </LinearLayout>
@@ -121,34 +112,16 @@
             android:contentDescription="@null" />
 
         <!-- Full-Width Divider (When Bar Only is selected) -->
-        <FrameLayout
+        <ImageView
             android:id="@+id/fl_year_full"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="12dp"
-            android:visibility="gone">
-
-            <ProgressBar
-                android:id="@+id/pb_year_full"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:max="1000"
-                android:progress="690"
-                android:indeterminate="false"
-                android:progressDrawable="@drawable/progress_year" />
-
-            <ProgressBar
-                android:id="@+id/pb_year_light_full"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:max="1000"
-                android:progress="690"
-                android:indeterminate="false"
-                android:visibility="gone"
-                android:progressDrawable="@drawable/progress_year_light" />
-        </FrameLayout>
+            android:scaleType="fitXY"
+            android:src="@drawable/bar_preview"
+            android:visibility="gone"
+            android:importantForAccessibility="no"
+            android:contentDescription="@null" />
 
         <!-- Subtle divider between header and affirmation -->
         <ImageView
@@ -178,6 +151,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        tools:ignore="InefficientWeight"
         android:gravity="center_vertical"
         android:orientation="vertical">
 

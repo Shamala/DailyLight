@@ -1,14 +1,16 @@
 package com.shamala.dailylight
 
 import android.app.Activity
+import android.graphics.Insets
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.SeekBar
@@ -32,7 +34,39 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        applyEdgeToEdgeInsets()
         wireControls()
+    }
+
+    /**
+     * Android 15 draws every app edge to edge once it targets API 35+, so the
+     * status and navigation bars sit on top of the content unless we inset it
+     * ourselves. The layout keeps its own breathing room; the system bars are
+     * added on top of it rather than replacing it.
+     */
+    private fun applyEdgeToEdgeInsets() {
+        val scroll = findViewById<View>(R.id.scroll_root)
+        val content = findViewById<View>(R.id.content_root)
+        val basePaddingTop = content.paddingTop
+        val basePaddingBottom = content.paddingBottom
+        val basePaddingStart = content.paddingStart
+        val basePaddingEnd = content.paddingEnd
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return
+
+        scroll.setOnApplyWindowInsetsListener { _, insets ->
+            val bars: Insets = insets.getInsets(
+                WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()
+            )
+            content.setPaddingRelative(
+                basePaddingStart + bars.left,
+                basePaddingTop + bars.top,
+                basePaddingEnd + bars.right,
+                basePaddingBottom + bars.bottom
+            )
+            insets
+        }
+        scroll.requestApplyInsets()
     }
 
     override fun onResume() {
@@ -132,6 +166,23 @@ class MainActivity : Activity() {
             })
     }
 
+    /**
+     * The preview card, painted by exactly the code the widget runs.
+     *
+     * The Lora bitmaps are laid out against a pixel width, so the card has to
+     * have been measured before this means anything. On the very first pass it
+     * has not been, so the paint is deferred one frame.
+     */
+    private fun paintPreviewCard() {
+        val card = findViewById<View>(R.id.widget_root)
+        val contentWidth = card.width - card.paddingStart - card.paddingEnd
+        if (contentWidth <= 0) {
+            card.post { paintPreviewCard() }
+            return
+        }
+        CardPainter.paint(this, ViewSurface(card), contentWidth)
+    }
+
     /** A change was made: redraw here and push it to the home screen. */
     private fun applied() {
         render()
@@ -147,88 +198,7 @@ class MainActivity : Activity() {
         val day = DailyContent.now(this)
         val scale = Prefs.textScale(this)
 
-        // --- the card, drawn the same way the widget draws it ---
-
-        val isDark = Prefs.isDarkMode(this)
-
-        val background =
-            if (Prefs.shiftColours(this)) {
-                DailyWidgetProvider.backgroundFor(day.phase, isDark)
-            } else {
-                if (isDark) R.drawable.widget_bg_dawn else R.drawable.widget_bg_dawn_light
-            }
-        findViewById<View>(R.id.widget_root).setBackgroundResource(background)
-
-        val weekday = findViewById<TextView>(R.id.tv_weekday)
-        weekday.text = day.weekday
-        weekday.setTextColor(getColor(if (isDark) R.color.day_label else R.color.label_dark))
-        weekday.setTextSize(
-            TypedValue.COMPLEX_UNIT_SP, DailyContent.weekdaySizeSp(scale)
-        )
-
-        val date = findViewById<TextView>(R.id.tv_date)
-        date.text = day.date
-        date.setTextColor(getColor(if (isDark) R.color.cream_dim else R.color.text_dark_dim))
-        date.setTextSize(
-            TypedValue.COMPLEX_UNIT_SP, DailyContent.dateSizeSp(scale)
-        )
-
-        val affirmation = findViewById<TextView>(R.id.tv_affirmation)
-        affirmation.text = day.affirmation
-        affirmation.setTextColor(getColor(if (isDark) R.color.cream else R.color.text_dark))
-        affirmation.setTextSize(
-            TypedValue.COMPLEX_UNIT_SP,
-            DailyContent.affirmationSizeSp(day.affirmation, scale)
-        )
-
-        val thought = findViewById<TextView>(R.id.tv_thought)
-        thought.text = day.thought
-        thought.setTextColor(getColor(if (isDark) R.color.muted else R.color.text_muted_dark))
-        thought.setTextSize(
-            TypedValue.COMPLEX_UNIT_SP,
-            DailyContent.thoughtSizeSp(day.thought, scale)
-        )
-
-        val yearLine = findViewById<TextView>(R.id.tv_yearline)
-        yearLine.setTextColor(getColor(if (isDark) R.color.muted else R.color.text_muted_dark))
-        yearLine.setTextSize(
-            TypedValue.COMPLEX_UNIT_SP, DailyContent.yearLineSizeSp(scale)
-        )
-
-        val showText = day.yearLine.isNotEmpty()
-        val showBar = Prefs.showBar(this)
-
-        val llInline = findViewById<View>(R.id.ll_year_inline)
-        val flFull = findViewById<View>(R.id.fl_year_full)
-        val pbInlineDark = findViewById<ProgressBar>(R.id.pb_year_inline)
-        val pbInlineLight = findViewById<ProgressBar>(R.id.pb_year_light_inline)
-        val pbFullDark = findViewById<ProgressBar>(R.id.pb_year_full)
-        val pbFullLight = findViewById<ProgressBar>(R.id.pb_year_light_full)
-
-        llInline.visibility = View.GONE
-        flFull.visibility = View.GONE
-
-        if (showBar) {
-            if (showText) {
-                llInline.visibility = View.VISIBLE
-                yearLine.text = DailyWidgetProvider.accented(this, day.yearLine, isDark)
-                
-                pbInlineDark.visibility = if (isDark) View.VISIBLE else View.GONE
-                pbInlineLight.visibility = if (isDark) View.GONE else View.VISIBLE
-                pbInlineDark.progress = day.yearProgress
-                pbInlineLight.progress = day.yearProgress
-                pbInlineDark.max = 1000
-                pbInlineLight.max = 1000
-            } else {
-                flFull.visibility = View.VISIBLE
-                pbFullDark.visibility = if (isDark) View.VISIBLE else View.GONE
-                pbFullLight.visibility = if (isDark) View.GONE else View.VISIBLE
-                pbFullDark.progress = day.yearProgress
-                pbFullLight.progress = day.yearProgress
-                pbFullDark.max = 1000
-                pbFullLight.max = 1000
-            }
-        }
+        paintPreviewCard()
 
         // --- the chrome around it ---
 
@@ -267,7 +237,7 @@ class MainActivity : Activity() {
         val hour = Prefs.eveningHour(this)
         findViewById<SeekBar>(R.id.sb_evening_hour).progress = hour - firstEveningHour
         findViewById<TextView>(R.id.tv_evening_hour).text =
-            String.format("from %02d:00", hour)
+            getString(R.string.evening_from_hour, hour)
 
         renderCustomWords()
         renderFavourites()
@@ -295,7 +265,14 @@ class MainActivity : Activity() {
             val kept = Prefs.favourites(this, voice)
             if (kept.isEmpty()) return@forEach
             any = true
-            container.addView(subheading(if (voice == Voice.EVENING) "Evening" else "Morning"))
+            container.addView(
+                subheading(
+                    getString(
+                        if (voice == Voice.EVENING) R.string.voice_evening
+                        else R.string.voice_morning
+                    )
+                )
+            )
             kept.forEach { word ->
                 container.addView(row(container, word) {
                     Prefs.removeFavourite(this, voice, word)
@@ -318,7 +295,7 @@ class MainActivity : Activity() {
 
     private fun subheading(text: String): TextView {
         val view = TextView(this)
-        view.text = text.uppercase()
+        view.text = text.uppercase(java.util.Locale.getDefault())
         view.setTextColor(getColor(R.color.day_label))
         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
         view.letterSpacing = 0.18f

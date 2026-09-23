@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Only ever seen in the widget picker, before the first update replaces it with
+  the painted bar. Roughly three quarters along, so the picker shows the shape
+  the bar actually takes rather than an empty track.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="3dp" />
+            <solid android:color="@color/bar_track" />
+        </shape>
+    </item>
+    <item android:width="21dp" android:gravity="start|center_vertical">
+        <shape android:shape="rectangle">
+            <corners android:radius="3dp" />
+            <solid android:color="@color/bar_fill" />
+        </shape>
+    </item>
+</layer-list>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 11 and below. The only thing worth carrying to a new phone is the
+  settings file: the chosen year line, text size, evening hour, and the words
+  the person wrote or kept.
+-->
+<full-backup-content>
+    <include domain="sharedpref" path="daily_light_prefs.xml" />
+</full-backup-content>
