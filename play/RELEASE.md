@@ -118,6 +118,15 @@ check whether your account is subject to that before promising anyone a date.
 Raise `versionCode` by one in `app/build.gradle.kts` every upload — Play rejects a
 repeat. Move `versionName` when the change is worth naming.
 
+**A version code is consumed the moment Play accepts the upload, and discarding the
+draft release does not give it back** — the bundle stays in the app bundle explorer.
+So `1` is gone; the first published build is `versionCode = 2`, `versionName = "1.0"`.
+
+To send the same build to another track, promote it or pick it with **Add from
+library** rather than uploading the file again. One binary should travel across
+Internal → Closed → Production, otherwise the thing you tested is not the thing you
+shipped.
+
 ---
 
 ## Known gap, deliberately left
