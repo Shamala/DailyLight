@@ -41,6 +41,13 @@ object CardRenderer {
     private const val MAX_BITMAP_BYTES = 1_500_000
     private const val BYTES_PER_PIXEL = 4
 
+    /**
+     * How far the words' type may step down to fit a short widget before the
+     * ImageView's own scaling takes over. Below this the words stop being
+     * comfortable to read at a glance, and a bigger widget is the answer.
+     */
+    private const val MIN_TYPE_FIT = 0.7f
+
     /** Factor to shrink a w x h render by so it lands inside the budget. */
     private fun fitScale(width: Int, height: Int): Float {
         val bytes = width.toLong() * height.toLong() * BYTES_PER_PIXEL
@@ -112,6 +119,10 @@ object CardRenderer {
     /**
      * Affirmation and thought together in one bitmap — one image view, one
      * allocation, and the gap between them stays exactly where it was.
+     *
+     * @param maxHeightPx the room the words get on the card. Past it the type
+     *   steps down and re-wraps at the full width, rather than leaving the
+     *   ImageView to shrink the finished picture.
      */
     fun words(
         context: Context,
@@ -119,7 +130,8 @@ object CardRenderer {
         thought: String,
         widthPx: Int,
         scale: TextScale,
-        isDark: Boolean = true
+        isDark: Boolean = true,
+        maxHeightPx: Int = Int.MAX_VALUE
     ): Bitmap? {
         val width = widthPx.coerceIn(1, MAX_WIDTH_PX)
         if (affirmation.isEmpty() && thought.isEmpty()) return null
@@ -127,30 +139,46 @@ object CardRenderer {
         val affColour = context.getColor(if (isDark) R.color.cream else R.color.text_dark)
         val thoColour = context.getColor(if (isDark) R.color.muted else R.color.text_muted_dark)
 
-        // One render pass at a given scale. Everything — width, type size and
-        // the gap between the two blocks — moves together, so a scaled render
-        // is the same picture at a smaller pixel count, not a different layout.
-        fun render(factor: Float): Triple<StaticLayout, StaticLayout, Float> {
+        // One render pass. [type] shrinks only the type, re-wrapping it across
+        // the full width; [factor] shrinks everything — width, type and gap —
+        // together, so a memory-scaled render is the same picture at a smaller
+        // pixel count, not a different layout.
+        fun render(type: Float, factor: Float): Triple<StaticLayout, StaticLayout, Float> {
             val w = (width * factor).toInt().coerceAtLeast(1)
+            val size = type * factor
             val affPaint = paint(
                 context, font(context, R.font.lora_italic),
-                DailyContent.affirmationSizeSp(affirmation, scale) * factor, affColour
+                DailyContent.affirmationSizeSp(affirmation, scale) * size, affColour
             )
             val thoPaint = paint(
                 context, font(context, R.font.lora_regular),
-                DailyContent.thoughtSizeSp(thought, scale) * factor, thoColour
+                DailyContent.thoughtSizeSp(thought, scale) * size, thoColour
             )
             return Triple(
-                layout(affirmation, affPaint, w, 5, dp(context, 5f) * factor, Layout.Alignment.ALIGN_CENTER),
-                layout(thought, thoPaint, w, 3, dp(context, 3f) * factor, Layout.Alignment.ALIGN_CENTER),
-                dp(context, 14f) * factor
+                layout(affirmation, affPaint, w, 5, dp(context, 5f) * size, Layout.Alignment.ALIGN_CENTER),
+                layout(thought, thoPaint, w, 3, dp(context, 3f) * size, Layout.Alignment.ALIGN_CENTER),
+                dp(context, 14f) * size
             )
         }
 
-        var (affLayout, thoLayout, gap) = render(1f)
-        var factor = fitScale(width, (affLayout.height + gap + thoLayout.height).toInt())
+        fun Triple<StaticLayout, StaticLayout, Float>.height() =
+            (first.height + third + second.height).toInt()
+
+        // A short widget has less room than the words want. The ImageView would
+        // shrink the whole bitmap to fit, which narrows the block into a column
+        // in the middle of a full-width card. Stepping the type down instead
+        // keeps the lines running the full width, as they do in the header.
+        var type = 1f
+        var rendered = render(type, 1f)
+        while (rendered.height() > maxHeightPx && type > MIN_TYPE_FIT) {
+            type = (type - 0.05f).coerceAtLeast(MIN_TYPE_FIT)
+            rendered = render(type, 1f)
+        }
+
+        var (affLayout, thoLayout, gap) = rendered
+        var factor = fitScale(width, rendered.height())
         if (factor < 1f) {
-            val scaled = render(factor)
+            val scaled = render(type, factor)
             affLayout = scaled.first
             thoLayout = scaled.second
             gap = scaled.third

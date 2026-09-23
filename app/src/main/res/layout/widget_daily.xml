@@ -155,14 +155,23 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <!-- Affirmation and thought, painted in Lora as one image. -->
+        <!--
+          Affirmation and thought, painted in Lora as one image.
+
+          fitCenter, not fitStart: the words are centred inside the bitmap, so
+          whenever the launcher gives this view a different shape than the
+          bitmap was painted for — a short widget that squeezes it, or a
+          reported width that is off — the image has to shrink about the
+          middle. fitStart pinned it to the left edge and pushed the whole
+          block off-centre.
+        -->
         <ImageView
             android:id="@+id/img_words"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:adjustViewBounds="true"
-            android:scaleType="fitStart"
+            android:scaleType="fitCenter"
             android:visibility="gone"
             android:importantForAccessibility="no"
             android:contentDescription="@null" />

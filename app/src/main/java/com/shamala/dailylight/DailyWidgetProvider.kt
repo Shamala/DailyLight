@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.RemoteViews
 import java.time.LocalDate
@@ -78,20 +79,36 @@ class DailyWidgetProvider : AppWidgetProvider() {
             }
         }
 
-        /** Usable text width in pixels for this particular placed widget. */
-        private fun contentWidthPx(
+        /**
+         * Usable width and height in pixels inside this placed widget's
+         * padding.
+         *
+         * The launcher reports a range, not one size: in portrait the card is
+         * MIN_WIDTH x MAX_HEIGHT, in landscape MAX_WIDTH x MIN_HEIGHT. Reading
+         * MIN_WIDTH alone painted a landscape card's words too narrow for
+         * their view. Height is null when the launcher gives nothing, and the
+         * words then paint at their natural size.
+         */
+        private fun contentSizePx(
             context: Context,
             manager: AppWidgetManager?,
             appWidgetId: Int
-        ): Int {
+        ): Pair<Int, Int?> {
             val density = context.resources.displayMetrics.density
-            val widthDp = manager
-                ?.getAppWidgetOptions(appWidgetId)
-                ?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)
-                ?.takeIf { it > 0 }
+            val landscape = context.resources.configuration.orientation ==
+                Configuration.ORIENTATION_LANDSCAPE
+            val options = manager?.getAppWidgetOptions(appWidgetId)
+            fun option(key: String) = options?.getInt(key, 0)?.takeIf { it > 0 }
+
+            val widthDp = (if (landscape) option(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH) else null)
+                ?: option(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
                 ?: 300
-            val usableDp = (widthDp - CardPainter.HORIZONTAL_PADDING_DP).coerceAtLeast(120)
-            return (usableDp * density).toInt()
+            val heightDp = (if (landscape) option(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) else null)
+                ?: option(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+
+            val usableWidthDp = (widthDp - CardPainter.HORIZONTAL_PADDING_DP).coerceAtLeast(120)
+            val usableHeightDp = heightDp?.let { it - CardPainter.VERTICAL_PADDING_DP }
+            return (usableWidthDp * density).toInt() to usableHeightDp?.let { (it * density).toInt() }
         }
 
         fun buildViews(
@@ -100,11 +117,8 @@ class DailyWidgetProvider : AppWidgetProvider() {
             appWidgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID
         ): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget_daily)
-            CardPainter.paint(
-                context,
-                RemoteViewsSurface(views),
-                contentWidthPx(context, manager, appWidgetId)
-            )
+            val (widthPx, heightPx) = contentSizePx(context, manager, appWidgetId)
+            CardPainter.paint(context, RemoteViewsSurface(views), widthPx, heightPx)
 
             // --- the two tap zones -----------------------------------------
 

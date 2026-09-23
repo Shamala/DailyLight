@@ -1,6 +1,8 @@
 package com.shamala.dailylight
 
 import android.content.Context
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -18,6 +20,18 @@ object CardPainter {
     /** Side padding in widget_daily.xml, both sides. */
     const val HORIZONTAL_PADDING_DP = 44
 
+    /** Top and bottom padding in widget_daily.xml, together. */
+    const val VERTICAL_PADDING_DP = 40
+
+    /** words_zone's image sits this far below the rule. */
+    private const val WORDS_MARGIN_TOP_DP = 15f
+
+    /**
+     * Slack for the header estimate below: a launcher that swaps in its own
+     * sans face can set the weekday line a pixel or two taller than ours.
+     */
+    private const val HEADER_SLACK_DP = 4f
+
     /** Height of the small bar beside the year line, and of the full-width one. */
     private const val INLINE_BAR_WIDTH_DP = 28f
     private const val INLINE_BAR_HEIGHT_DP = 5f
@@ -32,17 +46,68 @@ object CardPainter {
      * @param contentWidthPx the usable width inside the card's padding, which
      *   the Lora bitmaps are laid out against. The widget takes it from the
      *   launcher's reported size; the preview from its own measured width.
+     * @param contentHeightPx the height inside the card's padding, or null
+     *   where the card grows to fit its words, as the preview does.
      */
-    fun paint(context: Context, surface: CardSurface, contentWidthPx: Int) {
+    fun paint(
+        context: Context,
+        surface: CardSurface,
+        contentWidthPx: Int,
+        contentHeightPx: Int? = null
+    ) {
         val day = DailyContent.now(context)
         val scale = Prefs.textScale(context)
         val isDark = Prefs.isDarkMode(context)
 
         paintBackground(context, surface, day, isDark)
-        paintHeader(context, surface, day, scale, isDark, contentWidthPx)
-        paintWords(context, surface, day, scale, isDark, contentWidthPx)
+        val dateHeightPx = paintHeader(context, surface, day, scale, isDark, contentWidthPx)
+        val wordsHeightPx = contentHeightPx?.let {
+            it - headerHeightPx(context, day, scale, dateHeightPx) -
+                px(context, WORDS_MARGIN_TOP_DP)
+        } ?: Int.MAX_VALUE
+        paintWords(context, surface, day, scale, isDark, contentWidthPx, wordsHeightPx)
         paintYear(context, surface, day, scale, isDark, contentWidthPx)
         describe(context, surface, day)
+    }
+
+    /**
+     * How tall the header zone will lay out, so the words know what is left.
+     * RemoteViews can't be measured from here, so this adds up the same
+     * pieces widget_daily.xml stacks: the weekday row, the date, the
+     * full-width bar when it shows, and the rule.
+     */
+    private fun headerHeightPx(
+        context: Context, day: DayContent, scale: TextScale, dateHeightPx: Int
+    ): Int {
+        fun lineHeight(family: String, sizeSp: Float): Int {
+            val paint = Paint().apply {
+                typeface = Typeface.create(family, Typeface.NORMAL)
+                textSize = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_SP, sizeSp, context.resources.displayMetrics
+                )
+            }
+            // A TextView keeps its font padding by default, so top to bottom.
+            return paint.fontMetricsInt.let { it.bottom - it.top }
+        }
+
+        val showBar = Prefs.showBar(context)
+        val inlineYear = showBar && day.yearLine.isNotEmpty()
+        val fullBar = showBar && day.yearLine.isEmpty()
+
+        var weekdayRow = lineHeight("sans-serif-light", DailyContent.weekdaySizeSp(scale))
+        if (inlineYear) {
+            weekdayRow = maxOf(
+                weekdayRow,
+                lineHeight("sans-serif-medium", DailyContent.yearLineSizeSp(scale)),
+                px(context, INLINE_BAR_HEIGHT_DP)
+            )
+        }
+
+        return weekdayRow +
+            px(context, 4f) + dateHeightPx +
+            (if (fullBar) px(context, 12f + FULL_BAR_HEIGHT_DP) else 0) +
+            px(context, 18f + 1f) +
+            px(context, HEADER_SLACK_DP)
     }
 
     private fun paintBackground(
@@ -64,7 +129,7 @@ object CardPainter {
         scale: TextScale,
         isDark: Boolean,
         widthPx: Int
-    ) {
+    ): Int {
         surface.text(R.id.tv_weekday, day.weekday)
         surface.textSizeSp(R.id.tv_weekday, DailyContent.weekdaySizeSp(scale))
         surface.textColour(
@@ -83,6 +148,7 @@ object CardPainter {
             surface.bitmap(R.id.img_date, bitmap)
             surface.visible(R.id.img_date, true)
             surface.visible(R.id.tv_date, false)
+            return bitmap.height
         } else {
             surface.visible(R.id.img_date, false)
             surface.visible(R.id.tv_date, true)
@@ -92,6 +158,10 @@ object CardPainter {
                 R.id.tv_date,
                 context.getColor(if (isDark) R.color.cream_dim else R.color.text_dark_dim)
             )
+            return (TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_SP, DailyContent.dateSizeSp(scale),
+                context.resources.displayMetrics
+            ) * 1.4f).toInt()
         }
     }
 
@@ -101,10 +171,11 @@ object CardPainter {
         day: DayContent,
         scale: TextScale,
         isDark: Boolean,
-        widthPx: Int
+        widthPx: Int,
+        maxHeightPx: Int
     ) {
         val bitmap = CardRenderer.words(
-            context, day.affirmation, day.thought, widthPx, scale, isDark
+            context, day.affirmation, day.thought, widthPx, scale, isDark, maxHeightPx
         )
         if (bitmap != null) {
             surface.bitmap(R.id.img_words, bitmap)
