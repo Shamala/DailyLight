@@ -1,0 +1,44 @@
+# Release notes
+
+Play allows 500 characters per language. Paste into the release notes
+box (en-US) for the matching track.
+
+## Internal testing
+
+```
+First build. Checking that the widget installs, places, resizes and redraws through Play.
+```
+
+(89/500 characters)
+
+## Closed testing
+
+```
+First test build.
+
+Please add the widget to your home screen and leave it there for a few days. Worth trying:
+
+- long-press to resize it
+- tap the words to draw a different pairing
+- tap the date to open the settings
+- the light theme, and the Large text size
+- leave it on past 6pm, when it turns to a closing voice
+
+Tell me anything that looks wrong, reads badly, or is hard to find.
+```
+
+(385/500 characters)
+
+## Production testing
+
+```
+Daily Light's first release.
+
+An affirmation, a short thought, the date, and how far along the year is - on your home screen. The words hold still all day. In the evening it turns to a closing voice.
+
+Write your own lines, keep the ones that land, and choose the theme, text size and how the year reads.
+
+No account, no internet, no tracking.
+```
+
+(342/500 characters)
