@@ -69,9 +69,8 @@ widget, affirmation, home screen, daily, calm, minimal
 
 - Email: **msurabhi23@gmail.com**
 - Website: optional, may be left blank
-- Privacy policy URL: **required** — see `play/privacy-policy.md`, publish it at a
-  public URL (a GitHub Pages page or a Gist rendered page is enough) and paste the
-  link.
+- Privacy policy URL: **https://shamala.github.io/DailyLight/privacy-policy.html**
+  (live; served by GitHub Pages from `docs/` on `main`)
 
 ---
 

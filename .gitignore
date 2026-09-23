@@ -13,3 +13,6 @@ captures/
 keystore.properties
 *.jks
 *.keystore
+
+# Built artifacts
+dist/

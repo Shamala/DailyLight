@@ -12,10 +12,16 @@ the key that signs what users install. If you lose the upload key you can ask Go
 to reset it, but do not rely on that — back the file up somewhere you will still
 have in five years.
 
+**Already done.** The key lives at `~/keys/dailylight-upload.p12` (PKCS12, RSA 4096,
+alias `dailylight`, valid to Feb 2054) and `keystore.properties` in the project root
+points at it. Neither is in the repo.
+
+To recreate it from scratch on another machine:
+
 ```sh
 keytool -genkeypair -v \
-  -keystore ~/keys/dailylight-upload.jks \
-  -storetype JKS \
+  -keystore ~/keys/dailylight-upload.p12 \
+  -storetype PKCS12 \
   -keyalg RSA -keysize 4096 -validity 10000 \
   -alias dailylight
 ```
@@ -24,7 +30,7 @@ Then create `keystore.properties` in the project root — it is gitignored, and 
 build reads it automatically:
 
 ```properties
-storeFile=/Users/you/keys/dailylight-upload.jks
+storeFile=/Users/you/keys/dailylight-upload.p12
 storePassword=…
 keyAlias=dailylight
 keyPassword=…
@@ -83,9 +89,11 @@ answers, and the Data safety answers. The graphics are already made:
 | Feature graphic | `play/graphics/feature-graphic-1024x500.png` | 1024×500 ✓ |
 | Phone screenshots | `play/graphics/screenshots/*.png` | ≥ 2, 1080×2160 ✓ |
 
-Publish `play/privacy-policy.md` at a public URL — GitHub Pages on this repo is
-enough — and paste that link into the listing. **A privacy policy URL is required
-for every app**, including one that collects nothing.
+The privacy policy is already live at
+**https://shamala.github.io/DailyLight/privacy-policy.html**, served by GitHub Pages
+from `docs/` on `main`. Paste that into the listing. **A privacy policy URL is
+required for every app**, including one that collects nothing. Edit `docs/` and push
+to change it.
 
 ## 5. Console checklist
 
