@@ -20,50 +20,39 @@ you add and remove people without editing the release, which matters over two we
 
 ---
 
-## The ask (WhatsApp / SMS)
+## The ask
 
-> I've made a small Android widget called Daily Light — it shows an affirmation, the
-> date, and how far along the year is on your home screen. To put it on the Play
-> Store I need 12 people to test it for two weeks.
->
-> Would you mind? It's free, takes about two minutes, and you can delete it after.
->
-> 1. Send me the Gmail address you use on your phone
-> 2. I'll send a link — tap it, tap "Become a tester", then install from Play
-> 3. Please leave it installed for two weeks
->
-> Android only, sorry — it won't work on an iPhone.
+```
+Hey! I made a little Android widget — shows a daily
+affirmation and the date on your home screen.
 
-## The ask (email / Slack)
+Need 12 people to test it for 2 weeks so I can put it
+on the Play Store 🙏
 
-> Subject: Two minutes of your time — testing an Android widget
->
-> I've built a small Android widget called Daily Light. It sits on the home screen
-> and shows one affirmation, a short thought, the date, and how far along the year
-> is. No account, no ads, no tracking — it can't even reach the internet.
->
-> To publish it on Google Play I need 12 people to be signed-up testers for 14 days.
-> That's the whole commitment: install it, leave it there a fortnight, delete it
-> afterwards if you like.
->
-> If you're in, reply with the Gmail address you use on your Android phone and I'll
-> send the link.
+Send me your Gmail and I'll share the link. Free,
+takes 2 mins, delete it after. Android only!
+```
 
-## Once they're in — send this on day one
+## Once they send their Gmail
 
-> Thanks! Here's the link: <OPT-IN LINK>
->
-> Tap "Become a tester", then "Download it on Google Play", then install.
->
-> To add the widget: press and hold an empty spot on your home screen → Widgets →
-> find Daily Light → drag it out. Long-press it afterwards to resize.
->
-> If you get a moment, three things I'd love to know:
-> 1. Does the text look right on your phone, or is anything cut off or blurry?
-> 2. Try resizing it — does it still look good bigger and smaller?
-> 3. After 6pm it changes to a different set of words. Does that land?
->
-> One line on each is plenty.
+```
+Here you go: <LINK>
+
+Tap "Become a tester" → then install from Play Store.
+
+To add it: long-press your home screen → Widgets →
+Daily Light → drag it out.
+
+Please keep it for 2 weeks 🙏
+```
+
+## A few days in
+
+```
+How's the widget looking? Two quick things —
+does the text look right on your phone, and does
+it still look ok if you resize it bigger?
+```
 
 ---
 
