@@ -5,6 +5,16 @@ box (en-US) for the matching track.
 
 ## Internal testing
 
+versionCode 3:
+
+```
+The affirmation and thought now stay centred and use the full width of the card at every widget size. On smaller widgets they used to sit off to the left and shrink. Please update, then try resizing the widget.
+```
+
+(210/500 characters)
+
+versionCode 2:
+
 ```
 First build. Checking that the widget installs, places, resizes and redraws through Play.
 ```
