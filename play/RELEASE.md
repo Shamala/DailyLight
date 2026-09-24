@@ -59,17 +59,17 @@ jarsigner -verify -verbose -certs app/build/outputs/bundle/release/app-release.a
 ## 3. Screenshots
 
 Five are already in `play/graphics/screenshots/`, captured from a Pixel 8 emulator
-with the widget genuinely placed on the home screen, and cropped to 1080×2160 so
+(retaken 2026-09-24 for the sky) with the widget genuinely placed on the home screen, and cropped to 1080×2160 so
 they satisfy Play's rule that the long side is no more than twice the short side
 (a raw 1080×2400 Pixel screenshot fails it):
 
 | File | What it shows |
 |---|---|
-| `01-home-morning.png` | The widget on the home screen, dawn palette, morning voice |
-| `02-home-evening.png` | The closing voice and the dusk palette |
-| `03-home-light.png` | The light theme |
-| `04-home-bar-only.png` | The year line set to bar-only |
-| `05-settings.png` | The app's own screen with the live preview card |
+| `01-home-morning.png` | The widget at sunrise (06:12): the sun on the horizon bottom left, morning voice |
+| `02-home-evening.png` | Sunset (18:48): the sun sinking bottom right in rose, the closing voice |
+| `03-home-light.png` | The light theme at midday, the sun overhead |
+| `04-home-bar-only.png` | Night (22:15): moon and stars, the year line set to bar-only |
+| `05-settings.png` | The app's own screen: the sunrise header and the live preview card |
 
 Play takes at least 2 and at most 8, so upload all five in that order. Replace or
 add to them from your own phone if you would rather the wallpaper and the app dock

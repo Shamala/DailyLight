@@ -64,7 +64,10 @@ means redrawing every few seconds, which costs battery and which Android throttl
 genuine animation is the three-second sunrise or sunset on the app's own screen
 (`SkyHeaderView`), which stops when it's done. The sky is painted at a third of the card's
 size and stretched: soft light survives that, and it keeps the bitmap near 0.2 MB. Stars and
-the moon stay in the margins so none reads as punctuation in the words.
+the moon stay in the margins so none reads as punctuation in the words, and the sun's disc
+only shows where there's room for it — on the horizon for the first and last half hour of
+daylight, and in the gap at the top around midday. The rest of the day just its glow crosses
+the card, so nothing solid ever sits behind a line of text.
 
 **One tap to put it on the home screen.** Testers installed the app and never found the
 widget — older testers didn't know what a widget was. Until one is placed, the app offers a
@@ -104,6 +107,8 @@ app/src/main/java/com/shamala/dailylight/
 ├── Prefs.kt                settings, their own words, "shown more often" lines; SharedPreferences
 ├── DailyContent.kt         date, year progress, phase, voice, which words this moment gets
 ├── CardRenderer.kt         paints the Lora lines into bitmaps (see §5)
+├── SkyPainter.kt           the widget's sky: sun, glow, horizon, moon and stars, at 1/3 size
+├── SkyHeaderView.kt        the app screen's three-second sunrise or sunset
 ├── DailyWidgetProvider.kt  assembles the RemoteViews, schedules the daily refresh
 └── MainActivity.kt         settings screen and word editor
 ```

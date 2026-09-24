@@ -19,7 +19,8 @@ import kotlin.math.sin
 /**
  * The sky behind the words: a sun that rises bottom left at 06:00, crosses
  * the top of the card and sets bottom right at 19:00, then a small moon and a
- * few stars until morning.
+ * few stars until morning. The disc shows at sunrise, sunset and midday; the
+ * rest of the day its glow carries the light across, behind the words.
  *
  * The card's colour still comes from the phase backgrounds; this only adds
  * the light. It is painted at a third of the card's size and scaled up by the
@@ -118,16 +119,21 @@ object SkyPainter {
         val along = t.coerceIn(0f, 1f)
         // How high it is: 0 on the horizon, 1 overhead.
         val elevation = sin(PI * along).toFloat()
+        // Low sun is warm and bright; high sun is paler and quieter. Morning
+        // leans peach, evening leans rose.
+        val warm = 1f - elevation
+        val radius = dp(lerpF(11f, 13f, warm))
+
         val x = w * (0.14f + 0.72f * along)
+        // Overhead it sits in the gap between the weekday and the year line,
+        // whole, not cut off by the card's top edge.
+        val topY = max(h * 0.07f, radius + dp(6f))
         val y = if (t in 0f..1f) {
-            horizonY - elevation * (horizonY - h * 0.07f)
+            horizonY - elevation * (horizonY - topY)
         } else {
             horizonY + dp(10f) // just under the horizon at twilight
         }
 
-        // Low sun is warm and bright; high sun is paler and quieter. Morning
-        // leans peach, evening leans rose.
-        val warm = 1f - elevation
         val low = if (t < 0.5f) intArrayOf(240, 176, 141) else intArrayOf(240, 150, 130)
         val high = intArrayOf(250, 232, 196)
         val glow = IntArray(3) { lerp(high[it], low[it], warm) }
@@ -145,14 +151,22 @@ object SkyPainter {
 
         if (t !in 0f..1f) return
 
+        // The disc only where the card has room for it: within a sun's width
+        // of the horizon at sunrise and sunset — measured in distance, so a
+        // short card doesn't lift it into the words — and in the gap at the
+        // top around midday. In between, only the glow travels across.
+        val onHorizon = 1f - smoothstep(radius * 1.0f, radius * 2.4f, horizonY - y)
+        val overhead = smoothstep(0.94f, 0.985f, elevation)
+        val shown = max(onHorizon, overhead)
+        if (shown <= 0f) return
+
         // The disc itself, cut off at the horizon so it rises and sets.
-        val radius = dp(lerpF(11f, 15f, warm))
         val disc = if (isDark) {
             IntArray(3) { lerp(intArrayOf(252, 236, 205)[it], if (t < 0.5f) intArrayOf(247, 203, 166)[it] else intArrayOf(244, 164, 143)[it], warm) }
         } else {
             intArrayOf(250, 215, 170)
         }
-        val discAlpha = lerpF(0.8f, 1f, warm)
+        val discAlpha = lerpF(0.8f, 1f, warm) * shown
         canvas.save()
         canvas.clipRect(0f, 0f, w.toFloat(), horizonY)
         canvas.drawCircle(x, y, radius, Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -200,6 +214,11 @@ object SkyPainter {
                 null, Shader.TileMode.CLAMP
             )
         })
+    }
+
+    private fun smoothstep(edge0: Float, edge1: Float, x: Float): Float {
+        val f = ((x - edge0) / (edge1 - edge0)).coerceIn(0f, 1f)
+        return f * f * (3f - 2f * f)
     }
 
     private fun lerp(a: Int, b: Int, f: Float): Int = (a + (b - a) * f).toInt()
