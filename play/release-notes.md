@@ -3,7 +3,7 @@
 Play allows 500 characters per language. Paste into the release notes
 box (en-US) for the matching track.
 
-## versionCode 4 (internal or closed testing)
+## versionCode 5 (internal or closed testing)
 
 ```
 New in this update:
