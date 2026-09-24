@@ -222,6 +222,25 @@
             android:text="Progress hides in the days that felt like nothing happened." />
     </LinearLayout>
 
+    <!--
+      For someone new to the widget: what the two tap zones do. Each half
+      disappears once they've used it, and then the line goes altogether.
+      Outside the words zone, so tapping the hint itself does nothing.
+    -->
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif"
+        android:textSize="11sp"
+        android:textColor="@color/day_label"
+        android:gravity="center_horizontal"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:visibility="gone"
+        android:text="@string/hint_both" />
+
 </LinearLayout>
 
 </FrameLayout>

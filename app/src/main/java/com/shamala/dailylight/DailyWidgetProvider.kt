@@ -44,6 +44,7 @@ class DailyWidgetProvider : AppWidgetProvider() {
         super.onReceive(context, intent)
         when (intent.action) {
             ACTION_CYCLE -> {
+                Prefs.setUsedCycle(context)
                 Prefs.bumpOffset(context)
                 refreshAll(context)
             }
@@ -195,6 +196,7 @@ class DailyWidgetProvider : AppWidgetProvider() {
 
             val open = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                putExtra(MainActivity.EXTRA_FROM_WIDGET, true)
             }
             views.setOnClickPendingIntent(
                 R.id.header_zone,

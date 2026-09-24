@@ -53,6 +53,14 @@
     <!-- Read aloud by TalkBack; the card itself is painted as a bitmap. -->
     <string name="card_description">%1$s. %2$s. %3$s</string>
     <string name="cycle_action">Show a different affirmation</string>
+
+    <!--
+      The hint along the bottom of the widget for someone new to it. Each half
+      goes once they've done it: tapped the words, or opened the app from the date.
+    -->
+    <string name="hint_both">Tap the words for a new one · Tap the date to open the app</string>
+    <string name="hint_words">Tap the words for a new one</string>
+    <string name="hint_date">Tap the date to open the app</string>
     <string name="open_settings_action">Open Daily Light settings</string>
 
     <string name="sec_evening">Evening</string>

@@ -67,6 +67,23 @@ object Prefs {
         p(context).edit().putBoolean(KEY_PIN_DISMISSED, dismissed).apply()
     }
 
+    private const val KEY_USED_CYCLE = "used_cycle"
+    private const val KEY_USED_OPEN = "used_open"
+
+    /** They have tapped the words on the widget at least once. */
+    fun usedCycle(context: Context): Boolean = p(context).getBoolean(KEY_USED_CYCLE, false)
+
+    fun setUsedCycle(context: Context) {
+        p(context).edit().putBoolean(KEY_USED_CYCLE, true).apply()
+    }
+
+    /** They have opened the app by tapping the date on the widget. */
+    fun usedOpen(context: Context): Boolean = p(context).getBoolean(KEY_USED_OPEN, false)
+
+    fun setUsedOpen(context: Context) {
+        p(context).edit().putBoolean(KEY_USED_OPEN, true).apply()
+    }
+
     private const val K_OFFSET = "shuffle_offset"
     private const val K_OFFSET_DATE = "shuffle_offset_date"
     private const val K_YEAR_LINE = "year_line"

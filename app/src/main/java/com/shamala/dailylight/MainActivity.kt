@@ -36,6 +36,7 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        noteOpenedFromWidget(intent)
         applyEdgeToEdgeInsets()
         wireControls()
         openSky(firstOpen = savedInstanceState == null)
@@ -96,6 +97,22 @@ class MainActivity : Activity() {
             insets
         }
         scroll.requestApplyInsets()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        noteOpenedFromWidget(intent)
+    }
+
+    /**
+     * Opened by tapping the date on the widget: they know that part now, so
+     * the widget's hint can drop it.
+     */
+    private fun noteOpenedFromWidget(intent: Intent?) {
+        if (intent?.getBooleanExtra(EXTRA_FROM_WIDGET, false) != true) return
+        if (Prefs.usedOpen(this)) return
+        Prefs.setUsedOpen(this)
+        DailyWidgetProvider.refreshAll(this)
     }
 
     override fun onResume() {
@@ -221,7 +238,7 @@ class MainActivity : Activity() {
             card.post { paintPreviewCard() }
             return
         }
-        CardPainter.paint(this, ViewSurface(card), contentWidth)
+        CardPainter.paint(this, ViewSurface(card), contentWidth, showHint = false)
         // Forced: the size may be the same, but the time or theme may not be.
         paintPreviewSky(card, force = true)
     }
@@ -392,4 +409,9 @@ class MainActivity : Activity() {
 
     private fun dp(value: Int): Int =
         (value * resources.displayMetrics.density).toInt()
+
+    companion object {
+        /** On the intent the widget's date opens us with. */
+        const val EXTRA_FROM_WIDGET = "com.shamala.dailylight.extra.FROM_WIDGET"
+    }
 }

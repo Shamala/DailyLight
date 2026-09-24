@@ -26,6 +26,10 @@ object CardPainter {
     /** words_zone's image sits this far below the rule. */
     private const val WORDS_MARGIN_TOP_DP = 15f
 
+    /** The first-use hint under the words: tv_hint in widget_daily.xml. */
+    private const val HINT_SIZE_SP = 11f
+    private const val HINT_MARGIN_TOP_DP = 8f
+
     /**
      * Slack for the header estimate below: a launcher that swaps in its own
      * sans face can set the weekday line a pixel or two taller than ours.
@@ -48,12 +52,16 @@ object CardPainter {
      *   launcher's reported size; the preview from its own measured width.
      * @param contentHeightPx the height inside the card's padding, or null
      *   where the card grows to fit its words, as the preview does.
+     * @param showHint whether to show the line explaining the two tap zones.
+     *   The widget does until each has been used; the app's preview never
+     *   does, since the app says it in full under the card.
      */
     fun paint(
         context: Context,
         surface: CardSurface,
         contentWidthPx: Int,
-        contentHeightPx: Int? = null
+        contentHeightPx: Int? = null,
+        showHint: Boolean = true
     ) {
         val day = DailyContent.now(context)
         val scale = Prefs.textScale(context)
@@ -61,9 +69,10 @@ object CardPainter {
 
         paintBackground(context, surface, day, isDark)
         val dateHeightPx = paintHeader(context, surface, day, scale, isDark, contentWidthPx)
+        val hintHeightPx = paintHint(context, surface, scale, isDark, showHint)
         val wordsHeightPx = contentHeightPx?.let {
             it - headerHeightPx(context, day, scale, dateHeightPx) -
-                px(context, WORDS_MARGIN_TOP_DP)
+                px(context, WORDS_MARGIN_TOP_DP) - hintHeightPx
         } ?: Int.MAX_VALUE
         paintWords(context, surface, day, scale, isDark, contentWidthPx, wordsHeightPx)
         paintYear(context, surface, day, scale, isDark, contentWidthPx)
@@ -96,19 +105,54 @@ object CardPainter {
      * pieces widget_daily.xml stacks: the weekday row, the date, the
      * full-width bar when it shows, and the rule.
      */
+    /** One line of a system-font TextView, font padding included. */
+    private fun lineHeightPx(context: Context, family: String, sizeSp: Float): Int {
+        val paint = Paint().apply {
+            typeface = Typeface.create(family, Typeface.NORMAL)
+            textSize = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_SP, sizeSp, context.resources.displayMetrics
+            )
+        }
+        // A TextView keeps its font padding by default, so top to bottom.
+        return paint.fontMetricsInt.let { it.bottom - it.top }
+    }
+
+    /**
+     * The hint along the bottom for someone new to the widget: tapping the
+     * words draws a new pairing, which nothing else on the card suggests, and
+     * tapping the date opens the app. Each half goes once they've used it.
+     *
+     * @return the height it takes, so the words can leave room for it
+     */
+    private fun paintHint(
+        context: Context, surface: CardSurface, scale: TextScale, isDark: Boolean, show: Boolean
+    ): Int {
+        val words = !Prefs.usedCycle(context)
+        val date = !Prefs.usedOpen(context)
+        val text = when {
+            !show -> null
+            words && date -> R.string.hint_both
+            words -> R.string.hint_words
+            date -> R.string.hint_date
+            else -> null
+        }
+        surface.visible(R.id.tv_hint, text != null)
+        if (text == null) return 0
+
+        val sizeSp = HINT_SIZE_SP * scale.factor
+        surface.text(R.id.tv_hint, context.getString(text))
+        surface.textSizeSp(R.id.tv_hint, sizeSp)
+        surface.textColour(
+            R.id.tv_hint,
+            context.getColor(if (isDark) R.color.day_label else R.color.label_dark)
+        )
+        return px(context, HINT_MARGIN_TOP_DP) + lineHeightPx(context, "sans-serif", sizeSp)
+    }
+
     private fun headerHeightPx(
         context: Context, day: DayContent, scale: TextScale, dateHeightPx: Int
     ): Int {
-        fun lineHeight(family: String, sizeSp: Float): Int {
-            val paint = Paint().apply {
-                typeface = Typeface.create(family, Typeface.NORMAL)
-                textSize = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_SP, sizeSp, context.resources.displayMetrics
-                )
-            }
-            // A TextView keeps its font padding by default, so top to bottom.
-            return paint.fontMetricsInt.let { it.bottom - it.top }
-        }
+        fun lineHeight(family: String, sizeSp: Float) = lineHeightPx(context, family, sizeSp)
 
         val showBar = Prefs.showBar(context)
         val inlineYear = showBar && day.yearLine.isNotEmpty()
