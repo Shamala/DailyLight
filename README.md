@@ -8,8 +8,9 @@ A home-screen and lock-screen widget for Android. The first thing you see when y
 - a short thought to sit with
 
 After an hour you choose, it turns to a **closing voice** for the evening — setting down, noticing
-what went well, permission to stop. Set in Lora, on a palette that follows the light: indigo at dawn,
-cooler through the middle of the day, rose at dusk, deepest at night.
+what went well, permission to stop. Set in Lora, on a sky that follows the day: the sun rises bottom
+left in the morning, crosses the top, and sets bottom right in rose, then a moon and a few stars
+until morning. The app itself opens with a three-second sunrise, or a sunset in the evening.
 
 ---
 
@@ -20,9 +21,8 @@ nothing — no account, no internet, no permissions beyond restarting after a re
 
 1. **Open the project.** Android Studio → *Open* → choose the `DailyLight` folder. Let it sync.
 2. **Set the Gradle JDK to 21.** Settings → *Build, Execution, Deployment* → *Build Tools* → *Gradle*
-   → **Gradle JDK** → *Download JDK…* → version **21**. Recent Android Studio bundles Java 25, which
-   Gradle 8.13 refuses. (`gradle/gradle-daemon-jvm.properties` already asks for 21, so newer
-   Android Studio versions may pick it up on their own.)
+   → **Gradle JDK** → *Download JDK…* → version **21**. (`gradle/gradle-daemon-jvm.properties`
+   already asks for 21, so newer Android Studio versions may pick it up on their own.)
 3. **Turn on developer mode.** Settings → *About phone* → *Software information* → tap **Build
    number** seven times. Then Settings → *Developer options* → **USB debugging** on (and **Install
    via USB** if you see it).
@@ -32,7 +32,9 @@ nothing — no account, no internet, no permissions beyond restarting after a re
 
 Then place it:
 
-- **Home screen** — press and hold an empty spot → *Widgets* → search **Daily Light** → drag it on.
+- **Home screen** — open the app and tap **Put it on my home screen**, then **Add**. The app shows
+  this until a widget is placed. By hand: press and hold an empty spot → *Widgets* → search
+  **Daily Light** → drag it on.
 - **Lock screen** (One UI 8.5+) — press and hold the lock screen → pencil → *Widgets* → add it there
   too. On older One UI, Samsung allows only its own widgets on the lock screen; this one declares
   itself eligible and will appear once you update.
@@ -43,11 +45,15 @@ Then place it:
 ./gradlew assembleDebug
 ```
 
-The APK lands in `app/build/outputs/apk/debug/`. The wrapper downloads Gradle 8.13 on first run.
+The APK lands in `app/build/outputs/apk/debug/`. The wrapper downloads Gradle 9.6 on first run and
+checks it against its published SHA-256. For a Play upload, see `play/RELEASE.md`.
 
 ---
 
 ## Using it
+
+Until you've tried them, a small line along the bottom of the widget says what the two taps do;
+each half goes once you've used it.
 
 **Tap the words** on the widget to draw a different pairing. That lasts the rest of the day only —
 tomorrow returns to its own words rather than inheriting yesterday's fidgeting.
@@ -70,8 +76,10 @@ tomorrow returns to its own words rather than inheriting yesterday's fidgeting.
 `affirmations`, `thoughts`, `eveningAffirmations`, `eveningThoughts`. All original text. Add, delete
 or rewrite freely; the rotation adapts to whatever length the lists are.
 
-**The colours.** `app/src/main/res/values/colors.xml`, four sets of three stops plus a glow —
-`dawn_*`, `day_*`, `dusk_*`, `night_*`. Change a set and that time of day follows.
+**The colours.** `app/src/main/res/values/colors.xml`, four sets of three stops — `dawn_*`,
+`day_*`, `dusk_*`, `night_*`. Change a set and that time of day follows. The light on top — sun,
+glow, moon and stars — is painted by `SkyPainter.kt`, which also sets sunrise (06:00) and sunset
+(19:00).
 
 **The type.** `app/src/main/res/font/` holds three static cuts of Lora. Drop in a different `.ttf`
 (lowercase filename, letters and underscores only) and point both `CardRenderer.kt` (which paints
@@ -86,8 +94,8 @@ restricted set of views — `LinearLayout`, `FrameLayout`, `RelativeLayout`, `Te
 ## How it stays current
 
 - an inexact daily alarm at 00:01, for the date rolling over
-- `updatePeriodMillis` of 30 minutes, which is what catches the background changing through the day
-  and the switch to the evening voice
+- `updatePeriodMillis` of 30 minutes, which is what moves the sun and catches the switch to the
+  evening voice. Nothing on the widget animates, so it costs no battery.
 - broadcasts for reboot, date change, clock change and timezone change
 
 The affirmation and thought are a pure function of (date, voice, offset), so redraws never change
@@ -106,14 +114,17 @@ app/src/main/
 │   ├── Content.kt              the four word pools
 │   ├── Prefs.kt                settings, their own words, lines shown more often
 │   ├── DailyContent.kt         date, year progress, which words this moment gets
+│   ├── CardPainter.kt          decides how the card looks, for widget and preview alike
+│   ├── CardSurface.kt          the widget (RemoteViews) and preview (views) it paints onto
 │   ├── CardRenderer.kt         paints the date and words in Lora, as bitmaps
-│   ├── DailyWidgetProvider.kt  draws the widget, schedules the daily refresh
+│   ├── SkyPainter.kt           the widget's sky: sun, glow, horizon, moon and stars
+│   ├── SkyHeaderView.kt        the app screen's three-second sunrise or sunset
+│   ├── DailyWidgetProvider.kt  draws the widget, schedules the daily refresh, one-tap placing
 │   └── MainActivity.kt         settings screen and word editor
 └── res/
     ├── layout/widget_daily.xml the widget face
     ├── layout/activity_main.xml the settings screen
-    ├── drawable/widget_bg_*.xml the four times of day
-    ├── drawable/progress_year.xml the year bar
+    ├── drawable/widget_bg_*.xml the four times of day, dark and light
     ├── values/colors.xml       the palettes
     └── xml/widget_info.xml     size, resize limits, refresh interval, lock-screen eligibility
 ```

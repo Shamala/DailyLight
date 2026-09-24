@@ -1,6 +1,6 @@
 # Privacy Policy — Daily Light
 
-**Last updated: 23 September 2026**
+**Last updated: 24 September 2026**
 
 Daily Light is an Android home-screen widget published by the developer of this app.
 This policy explains what the app does with information. It is short because the app
@@ -27,6 +27,10 @@ your device:
 - whether the colours follow the time of day, and whether the year bar is shown
 - any affirmations you wrote yourself
 - any lines you marked to be shown more often
+- which reshuffle of today's words you are on, if you tapped for a different one
+- a few markers of how you have used it, so it stops repeating help you no longer need:
+  whether you chose "Not now" when offered to add the widget, and whether you have tried
+  tapping the words and the date
 
 This stays on your phone, in storage that other apps cannot read. It is never
 uploaded.
