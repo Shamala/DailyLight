@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The widget face. Restricted to views RemoteViews can inflate — LinearLayout,
+  The widget face. Restricted to views RemoteViews can inflate — FrameLayout, LinearLayout,
   TextView, ImageView, ProgressBar. No ConstraintLayout, no bare View.
 
   Two tap zones: the header opens the app, the words reshuffle.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="HardcodedText"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_dawn">
+
+    <!--
+      The sky: sun, glow, horizon, or moon and stars. Painted by SkyPainter at
+      a third of the card's size and stretched back up; it carries no words.
+    -->
+    <ImageView
+        android:id="@+id/img_sky"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:importantForAccessibility="no"
+        android:contentDescription="@null" />
+
+<LinearLayout
+    android:id="@+id/card_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/widget_bg_dawn"
     android:paddingStart="22dp"
     android:paddingEnd="22dp"
     android:paddingTop="20dp"
@@ -206,3 +223,5 @@
     </LinearLayout>
 
 </LinearLayout>
+
+</FrameLayout>

@@ -14,17 +14,4 @@
         </shape>
     </item>
 
-    <item>
-        <shape android:shape="rectangle">
-            <corners android:radius="28dp" />
-            <gradient
-                android:type="radial"
-                android:gradientRadius="250dp"
-                android:centerX="0.92"
-                android:centerY="0.78"
-                android:startColor="@color/dusk_glow"
-                android:endColor="@color/dusk_glow_end" />
-        </shape>
-    </item>
-
 </layer-list>

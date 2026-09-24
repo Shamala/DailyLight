@@ -68,6 +68,26 @@ object CardPainter {
         paintWords(context, surface, day, scale, isDark, contentWidthPx, wordsHeightPx)
         paintYear(context, surface, day, scale, isDark, contentWidthPx)
         describe(context, surface, day)
+
+        // The widget knows its whole size up front. The preview grows to fit
+        // its words, so it calls paintSky itself once it has been laid out.
+        if (contentHeightPx != null) {
+            paintSky(
+                context, surface,
+                contentWidthPx + px(context, HORIZONTAL_PADDING_DP.toFloat()),
+                contentHeightPx + px(context, VERTICAL_PADDING_DP.toFloat())
+            )
+        }
+    }
+
+    /**
+     * The sun, or the moon, behind the words — for the card's whole size,
+     * padding included, since the light runs to the edges.
+     */
+    fun paintSky(context: Context, surface: CardSurface, cardWidthPx: Int, cardHeightPx: Int) {
+        val sky = SkyPainter.paint(context, cardWidthPx, cardHeightPx, Prefs.isDarkMode(context))
+        if (sky != null) surface.bitmap(R.id.img_sky, sky)
+        surface.visible(R.id.img_sky, sky != null)
     }
 
     /**

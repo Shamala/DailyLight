@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.RemoteViews
+import android.widget.Toast
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -46,6 +47,19 @@ class DailyWidgetProvider : AppWidgetProvider() {
                 Prefs.bumpOffset(context)
                 refreshAll(context)
             }
+            ACTION_PINNED -> {
+                // The launcher has just placed it. Show them where it went,
+                // and how to move it, while it's in front of them.
+                refreshAll(context)
+                Toast.makeText(context, R.string.pin_done, Toast.LENGTH_LONG).show()
+                runCatching {
+                    context.startActivity(
+                        Intent(Intent.ACTION_MAIN)
+                            .addCategory(Intent.CATEGORY_HOME)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
+                }
+            }
             ACTION_MIDNIGHT,
             Intent.ACTION_DATE_CHANGED,
             Intent.ACTION_TIME_CHANGED,
@@ -67,6 +81,38 @@ class DailyWidgetProvider : AppWidgetProvider() {
     companion object {
         const val ACTION_CYCLE = "com.shamala.dailylight.action.CYCLE"
         const val ACTION_MIDNIGHT = "com.shamala.dailylight.action.MIDNIGHT"
+        const val ACTION_PINNED = "com.shamala.dailylight.action.PINNED"
+
+        /**
+         * Ask the launcher to put the widget on the home screen. It shows its
+         * own "Add to home screen?" box; [ACTION_PINNED] arrives if they say
+         * yes. Returns false where the launcher can't do this, and the app
+         * shows the steps to place it by hand instead.
+         */
+        fun requestPin(context: Context): Boolean {
+            val manager = AppWidgetManager.getInstance(context)
+            if (!manager.isRequestPinAppWidgetSupported) return false
+            val callback = PendingIntent.getBroadcast(
+                context, 3,
+                Intent(context, DailyWidgetProvider::class.java).setAction(ACTION_PINNED),
+                // Mutable: the launcher adds the new widget's id to it.
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+            // Today's real card for the launcher's "Add to home screen?" box,
+            // instead of the layout's placeholder text in the system font.
+            val preview = Bundle().apply {
+                putParcelable(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW, previewViews(context))
+            }
+            return manager.requestPinAppWidget(
+                ComponentName(context, DailyWidgetProvider::class.java), preview, callback
+            )
+        }
+
+        /** Whether at least one Daily Light widget is placed anywhere. */
+        fun isPlaced(context: Context): Boolean =
+            AppWidgetManager.getInstance(context)
+                .getAppWidgetIds(ComponentName(context, DailyWidgetProvider::class.java))
+                .isNotEmpty()
 
         /** Redraw every instance, each at its own width. */
         fun refreshAll(context: Context) {
@@ -111,13 +157,27 @@ class DailyWidgetProvider : AppWidgetProvider() {
             return (usableWidthDp * density).toInt() to usableHeightDp?.let { (it * density).toInt() }
         }
 
+        /** The card at its default 4x3 size, for the launcher to preview. */
+        private fun previewViews(context: Context): RemoteViews {
+            val density = context.resources.displayMetrics.density
+            return buildViews(
+                context,
+                size = ((PREVIEW_WIDTH_DP - CardPainter.HORIZONTAL_PADDING_DP) * density).toInt() to
+                    ((PREVIEW_HEIGHT_DP - CardPainter.VERTICAL_PADDING_DP) * density).toInt()
+            )
+        }
+
+        private const val PREVIEW_WIDTH_DP = 360
+        private const val PREVIEW_HEIGHT_DP = 290
+
         fun buildViews(
             context: Context,
             manager: AppWidgetManager? = null,
-            appWidgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID
+            appWidgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID,
+            size: Pair<Int, Int?> = contentSizePx(context, manager, appWidgetId)
         ): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget_daily)
-            val (widthPx, heightPx) = contentSizePx(context, manager, appWidgetId)
+            val (widthPx, heightPx) = size
             CardPainter.paint(context, RemoteViewsSurface(views), widthPx, heightPx)
 
             // --- the two tap zones -----------------------------------------

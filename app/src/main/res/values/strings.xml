@@ -6,6 +6,23 @@
     <string name="tagline">A quiet start to the day.</string>
     <string name="tagline_evening">A quiet end to the day.</string>
 
+    <!-- The sky header, over the title when the app opens -->
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_evening">Good evening</string>
+
+    <!-- Getting the widget onto the home screen, shown until it is there -->
+    <string name="pin_title">See this every time you pick up your phone</string>
+    <string name="pin_body">It lives on your home screen and changes with the day. You never need to open the app.</string>
+    <string name="pin_button">Put it on my home screen</string>
+    <string name="pin_later">Not now</string>
+    <string name="pin_done">It\'s on your home screen. Press and hold it to move it or make it bigger.</string>
+    <string name="steps_title">Add it in 3 steps</string>
+    <string name="steps_body">Your phone needs you to place it by hand. It takes a few seconds.</string>
+    <string name="step_1">Press and hold an empty space on your home screen</string>
+    <string name="step_2">Tap <b>Widgets</b></string>
+    <string name="step_3">Find <b>Daily Light</b> and drag the card out</string>
+    <string name="steps_button">Take me to my home screen</string>
+
     <!-- The two buttons under the preview card -->
     <string name="keep_this">Show this more often</string>
     <string name="kept_already">✓ Showing more often</string>

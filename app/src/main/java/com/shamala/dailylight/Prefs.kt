@@ -57,6 +57,16 @@ object Prefs {
         p(context).edit().putBoolean(KEY_DARK_MODE, darkMode).apply()
     }
 
+    private const val KEY_PIN_DISMISSED = "pin_dismissed"
+
+    /** They said "Not now" to putting the widget on the home screen. */
+    fun pinDismissed(context: Context): Boolean =
+        p(context).getBoolean(KEY_PIN_DISMISSED, false)
+
+    fun setPinDismissed(context: Context, dismissed: Boolean) {
+        p(context).edit().putBoolean(KEY_PIN_DISMISSED, dismissed).apply()
+    }
+
     private const val K_OFFSET = "shuffle_offset"
     private const val K_OFFSET_DATE = "shuffle_offset_date"
     private const val K_YEAR_LINE = "year_line"

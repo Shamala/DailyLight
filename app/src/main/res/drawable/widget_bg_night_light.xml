@@ -11,16 +11,4 @@
                 android:endColor="@color/night_light_end" />
         </shape>
     </item>
-    <item>
-        <shape android:shape="rectangle">
-            <corners android:radius="28dp" />
-            <gradient
-                android:type="radial"
-                android:gradientRadius="160dp"
-                android:centerX="0.10"
-                android:centerY="0.10"
-                android:startColor="@color/night_light_glow"
-                android:endColor="@color/night_light_glow_end" />
-        </shape>
-    </item>
 </layer-list>

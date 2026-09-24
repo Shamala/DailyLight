@@ -19,30 +19,148 @@
         android:paddingTop="52dp"
         android:paddingBottom="56dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/lora_medium"
-            android:textSize="26sp"
-            android:textColor="@color/cream"
-            android:text="@string/app_name" />
+        <!--
+          The sky header. SkyHeaderView plays a three-second sunrise when the
+          app opens in the morning voice, a sunset in the evening one, and
+          the words fade in over it.
+        -->
+        <FrameLayout
+            android:id="@+id/sky_header"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:background="@drawable/header_bg">
 
-        <TextView
-            android:id="@+id/tv_voice_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/lora_italic"
-            android:textSize="14sp"
-            android:textColor="@color/muted"
-            android:text="@string/tagline" />
+            <com.shamala.dailylight.SkyHeaderView
+                android:id="@+id/sky_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no" />
+
+            <LinearLayout
+                android:id="@+id/sky_words"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="22dp">
+
+                <TextView
+                    android:id="@+id/tv_greeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.22"
+                    android:textAllCaps="true"
+                    android:textColor="@color/cream_dim"
+                    android:text="@string/greeting_morning" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/lora_medium"
+                    android:textSize="28sp"
+                    android:textColor="@color/cream"
+                    android:text="@string/app_name" />
+
+                <TextView
+                    android:id="@+id/tv_voice_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/lora_italic"
+                    android:textSize="15sp"
+                    android:textColor="@color/cream_dim"
+                    android:text="@string/tagline" />
+            </LinearLayout>
+        </FrameLayout>
 
         <!-- Live preview of the card as it is right now -->
         <include
             layout="@layout/widget_daily"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp" />
+            android:layout_marginTop="18dp" />
+
+        <!--
+          Shown until the widget is on the home screen. One large button asks
+          the launcher to place it; on a launcher that can't, the same space
+          shows the three steps to do it by hand.
+        -->
+        <LinearLayout
+            android:id="@+id/add_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="22dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_add_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/lora_regular"
+                android:textSize="22sp"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/cream"
+                android:text="@string/pin_title" />
+
+            <TextView
+                android:id="@+id/tv_add_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="17sp"
+                android:lineSpacingExtra="5dp"
+                android:textColor="@color/cream_dim"
+                android:text="@string/pin_body" />
+
+            <LinearLayout
+                android:id="@+id/steps_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout style="@style/StepRow">
+                    <TextView style="@style/StepNumber" android:text="1" tools:ignore="HardcodedText" />
+                    <TextView style="@style/StepText" android:text="@string/step_1" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/StepRow">
+                    <TextView style="@style/StepNumber" android:text="2" tools:ignore="HardcodedText" />
+                    <TextView style="@style/StepText" android:text="@string/step_2" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/StepRow">
+                    <TextView style="@style/StepNumber" android:text="3" tools:ignore="HardcodedText" />
+                    <TextView style="@style/StepText" android:text="@string/step_3" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_pin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:minHeight="60dp"
+                android:background="@drawable/btn_primary_bg"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/text_dark"
+                android:text="@string/pin_button" />
+
+            <TextView
+                android:id="@+id/btn_pin_later"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="52dp"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="@color/muted"
+                android:text="@string/pin_later" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -303,6 +421,20 @@
             android:text="@string/sec_placing" />
 
         <LinearLayout style="@style/Card">
+
+            <!-- The same one-tap placing as the panel above, for after "Not now". -->
+            <TextView
+                android:id="@+id/btn_pin_again"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:minHeight="52dp"
+                android:background="@drawable/btn_accent_bg"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:textColor="@color/accent"
+                android:text="@string/pin_button"
+                android:visibility="gone" />
 
             <TextView
                 style="@style/Hint"

@@ -1,6 +1,8 @@
 package com.shamala.dailylight
 
 import android.app.Activity
+import android.appwidget.AppWidgetManager
+import android.content.Intent
 import android.graphics.Insets
 import android.os.Build
 import android.os.Bundle
@@ -36,6 +38,33 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
         applyEdgeToEdgeInsets()
         wireControls()
+        openSky(firstOpen = savedInstanceState == null)
+
+        // The preview grows and shrinks with its words; its sky has to be
+        // repainted to the new size or the sun would stretch.
+        findViewById<View>(R.id.widget_root)
+            .addOnLayoutChangeListener { card, _, _, _, _, _, _, _, _ -> paintPreviewSky(card) }
+    }
+
+    /**
+     * Sunrise when the app opens in the morning voice, sunset in the evening
+     * one, with the words fading in as the light settles. Only on a fresh
+     * open — a rotation shows the finished sky.
+     */
+    private fun openSky(firstOpen: Boolean) {
+        val evening = DailyContent.now(this).voice == Voice.EVENING
+        val sky = findViewById<SkyHeaderView>(R.id.sky_view)
+        val words = findViewById<View>(R.id.sky_words)
+        sky.evening = evening
+        findViewById<TextView>(R.id.tv_greeting).setText(
+            if (evening) R.string.greeting_evening else R.string.greeting_morning
+        )
+        if (!firstOpen) {
+            sky.showFinished()
+            return
+        }
+        words.alpha = 0f
+        sky.play { words.animate().alpha(1f).setDuration(1500L).start() }
     }
 
     /**
@@ -79,6 +108,17 @@ class MainActivity : Activity() {
     // ------------------------------------------------------------------
 
     private fun wireControls() {
+        val pin = View.OnClickListener {
+            if (!DailyWidgetProvider.requestPin(this)) goHome()
+        }
+        findViewById<View>(R.id.btn_pin).setOnClickListener(pin)
+        findViewById<View>(R.id.btn_pin_again).setOnClickListener(pin)
+
+        findViewById<View>(R.id.btn_pin_later).setOnClickListener {
+            Prefs.setPinDismissed(this, true)
+            renderAddPanel()
+        }
+
         findViewById<View>(R.id.btn_another).setOnClickListener {
             Prefs.bumpOffset(this)
             applied()
@@ -175,12 +215,58 @@ class MainActivity : Activity() {
      */
     private fun paintPreviewCard() {
         val card = findViewById<View>(R.id.widget_root)
-        val contentWidth = card.width - card.paddingStart - card.paddingEnd
+        val content = findViewById<View>(R.id.card_content)
+        val contentWidth = content.width - content.paddingStart - content.paddingEnd
         if (contentWidth <= 0) {
             card.post { paintPreviewCard() }
             return
         }
         CardPainter.paint(this, ViewSurface(card), contentWidth)
+        // Forced: the size may be the same, but the time or theme may not be.
+        paintPreviewSky(card, force = true)
+    }
+
+    private var skySize = 0 to 0
+
+    /** Only when the size has actually changed, or the time has moved on. */
+    private fun paintPreviewSky(card: View, force: Boolean = false) {
+        if (card.width <= 0 || card.height <= 0) return
+        val size = card.width to card.height
+        if (!force && size == skySize) return
+        skySize = size
+        CardPainter.paintSky(this, ViewSurface(card), card.width, card.height)
+    }
+
+    /**
+     * Until the widget is on the home screen, the panel under the preview
+     * offers to put it there — one tap where the launcher allows it, three
+     * written steps where it doesn't.
+     */
+    private fun renderAddPanel() {
+        val placed = DailyWidgetProvider.isPlaced(this)
+        val canPin = AppWidgetManager.getInstance(this).isRequestPinAppWidgetSupported
+
+        findViewById<View>(R.id.add_panel).visibility =
+            if (!placed && !Prefs.pinDismissed(this)) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.btn_pin_again).visibility =
+            if (!placed && canPin) View.VISIBLE else View.GONE
+
+        findViewById<TextView>(R.id.tv_add_title)
+            .setText(if (canPin) R.string.pin_title else R.string.steps_title)
+        findViewById<TextView>(R.id.tv_add_body)
+            .setText(if (canPin) R.string.pin_body else R.string.steps_body)
+        findViewById<View>(R.id.steps_group).visibility =
+            if (canPin) View.GONE else View.VISIBLE
+        findViewById<TextView>(R.id.btn_pin)
+            .setText(if (canPin) R.string.pin_button else R.string.steps_button)
+    }
+
+    private fun goHome() {
+        startActivity(
+            Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
     }
 
     /** A change was made: redraw here and push it to the home screen. */
@@ -199,6 +285,7 @@ class MainActivity : Activity() {
         val scale = Prefs.textScale(this)
 
         paintPreviewCard()
+        renderAddPanel()
 
         // --- the chrome around it ---
 

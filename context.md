@@ -55,6 +55,23 @@ deepest at night. Text tones stay constant across all four so legibility is pred
 v1's palette was near-black and was lightened once, on request; the current stops are
 documented at the top of `colors.xml` along with a darker and a lighter set.
 
+**A sky that moves, but never animates on the home screen.** The card should feel like
+watching a sunrise in the morning and a sunset in the evening. On the widget that is a
+painted sky (`SkyPainter`): the sun rises bottom left at 06:00, crosses the top and sets
+bottom right at 19:00, then a moon and a few stars. It is redrawn with every 30-minute
+update, so the change is between glances, not while you look. Real animation on a widget
+means redrawing every few seconds, which costs battery and which Android throttles; the one
+genuine animation is the three-second sunrise or sunset on the app's own screen
+(`SkyHeaderView`), which stops when it's done. The sky is painted at a third of the card's
+size and stretched: soft light survives that, and it keeps the bitmap near 0.2 MB. Stars and
+the moon stay in the margins so none reads as punctuation in the words.
+
+**One tap to put it on the home screen.** Testers installed the app and never found the
+widget — older testers didn't know what a widget was. Until one is placed, the app offers a
+single large button that asks the launcher to add it (`requestPinAppWidget`, with today's
+real card as the preview), then goes to the home screen with a hint about moving and
+resizing. Where the launcher can't do that, the same space shows three written steps.
+
 **Words hold still.** The affirmation and thought are a pure function of (date, voice,
 offset). The widget redraws every 30 minutes and never changes the words underneath you —
 what you read at 6am is still there at lunch.
