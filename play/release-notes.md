@@ -7,14 +7,13 @@ box (en-US) for the matching track.
 
 ```
 New in this update:
-
-- One button puts the widget on your home screen: open the app and tap "Put it on my home screen"
-- The card now has a sky that follows the day: sunrise in the morning, sunset in the evening, moon and stars at night
-- A short hint on the widget shows what tapping the words and the date does
-- The words stay centred on smaller widgets
+- Tap "Put it on my home screen" in the app to add the widget in one step
+- A sky that follows the day: sunrise, sunset, moon and stars
+- A hint on the widget shows what tapping the words and date does
+- Words stay centred on small widgets
 ```
 
-(356/500 characters)
+(259/500 characters)
 
 ## Internal testing
 
