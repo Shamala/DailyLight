@@ -65,8 +65,9 @@ genuine animation is the three-second sunrise or sunset on the app's own screen
 (`SkyHeaderView`), which stops when it's done. The sky is painted at a third of the card's
 size and stretched: soft light survives that, and it keeps the bitmap near 0.2 MB. Stars and
 the moon stay in the margins so none reads as punctuation in the words, and the sun's disc
-only shows where there's room for it — on the horizon for the first and last half hour of
-daylight, and in the gap at the top around midday. The rest of the day just its glow crosses
+only shows where there's room for it — as a half-disc on the horizon just after sunrise and
+before sunset, small enough to sit in the card's bottom padding under the last line of words,
+and in the gap at the top around midday. The rest of the day just its glow crosses
 the card, so nothing solid ever sits behind a line of text.
 
 **One tap to put it on the home screen.** Testers installed the app and never found the

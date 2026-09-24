@@ -122,7 +122,9 @@ object SkyPainter {
         // Low sun is warm and bright; high sun is paler and quieter. Morning
         // leans peach, evening leans rose.
         val warm = 1f - elevation
-        val radius = dp(lerpF(11f, 13f, warm))
+        // Smaller on the horizon: a half-disc there has to fit in the card's
+        // bottom padding, under the last line of words.
+        val radius = dp(lerpF(12f, 9f, warm))
 
         val x = w * (0.14f + 0.72f * along)
         // Overhead it sits in the gap between the weekday and the year line,
@@ -151,11 +153,12 @@ object SkyPainter {
 
         if (t !in 0f..1f) return
 
-        // The disc only where the card has room for it: within a sun's width
-        // of the horizon at sunrise and sunset — measured in distance, so a
-        // short card doesn't lift it into the words — and in the gap at the
-        // top around midday. In between, only the glow travels across.
-        val onHorizon = 1f - smoothstep(radius * 1.0f, radius * 2.4f, horizonY - y)
+        // The disc only where the card has room for it: sitting on the
+        // horizon at sunrise and sunset, no more than half of it showing, so
+        // it stays in the bottom padding however little space the words leave
+        // — and in the gap at the top around midday. In between, only the
+        // glow travels across.
+        val onHorizon = 1f - smoothstep(0f, radius * 0.35f, horizonY - y)
         val overhead = smoothstep(0.94f, 0.985f, elevation)
         val shown = max(onHorizon, overhead)
         if (shown <= 0f) return
