@@ -5,6 +5,12 @@ code with [Remotion](https://www.remotion.dev).
 
 **Watch it:** [`daily-light-promo.mp4`](daily-light-promo.mp4)
 
+**Music:** "First Light", an original calm piece composed for this video in code
+([`music/compose.py`](music/compose.py)): soft chords under a sparse bell-piano melody. Nothing is
+sampled or borrowed, so there are no copyright or licensing issues; it is released under
+[CC0](https://creativecommons.org/publicdomain/zero/1.0/), free for any use. Edit the chords or
+melody in the script and run `python3 music/compose.py` to make your own.
+
 | Scene | Length | What's on screen |
 |---|---|---|
 | Sunrise | 5 s | Night lifts, the sun rises, "Daily Light · A quiet start to the day." |
@@ -79,7 +85,13 @@ each. Every scene is also registered on its own in `src/Root.tsx`, so it can be 
 separately. The main composition's length is the sum of the scenes minus the fade overlaps
 (810 − 4 × 15 = 735 frames).
 
-### 5. Preview and render
+### 5. Add music
+
+Put an audio file in `public/` and add `<Audio src={staticFile("first-light.mp3")} />` from
+`@remotion/media` (`npx remotion add @remotion/media`) at the top of the video. Only use music you
+have the rights to: your own, CC0, or a licence that allows it in a promo.
+
+### 6. Preview and render
 
 ```console
 npx remotion studio                                   # live preview at http://localhost:3000
@@ -111,7 +123,8 @@ src/
 ├── OneTapScene.tsx      one-tap setup
 ├── EndCard.tsx          closing card
 └── fonts.ts             loads Lora, the widget's typeface
-public/                  screenshots and icon from ../play/graphics
+music/compose.py         generates the music track
+public/                  screenshots, icon, and first-light.mp3
 ```
 
 Remotion is free for individuals and teams of up to three; see
