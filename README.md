@@ -133,6 +133,13 @@ Minimum Android 8.0 (API 26). No third-party dependencies — only the platform 
 
 ---
 
+## Promo video
+
+`promo-video/` holds a 24-second vertical promo, [`daily-light-promo.mp4`](promo-video/daily-light-promo.mp4),
+made in code with Remotion. Its README explains how it was built and how to make one like it.
+
+---
+
 ## Fonts
 
 Lora, by Cyreal, under the SIL Open Font License 1.1. The three files in `res/font/` are static
